@@ -5,7 +5,7 @@ nextflow.enable.dsl=2
 
 // import subworkflows
 include {Illumina_viridian} from './workflows/illumina.nf'
-//include {Nanopore_viridian} from './workflows/nanopore.nf'
+include {Nanopore_viridian} from './workflows/nanopore.nf'
 
 // Channels
 if (params.objstore) {
@@ -40,7 +40,7 @@ workflow {
 		Illumina_viridian(ch_objFiles)
         }
         else if (params.seq_tech == 'nanopore') {
-		nanopore_viridian(ch_objFiles)
+		Nanopore_viridian(ch_objFiles)
         } else {
        println("Please select a workflow with --seq_tech illumina or nanopore")
        }

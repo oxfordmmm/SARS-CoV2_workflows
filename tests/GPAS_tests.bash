@@ -61,26 +61,23 @@ SARS-CoV-2_reference_ox,mmm-artic-ont-s98244-1" \
 #	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 #
 ## ont_viridian_test
-#test_name=ont_viridian
-#echo Running ${test_name} test workflow
-#mkdir -p /work/runs/${test_name}_test
-#cd /work/runs/${test_name}_test
-#
-#nextflow  run \
-#        /data/pipelines/ncov2019-artic-nf/main.nf \
-#        -with-trace -with-report -with-timeline -with-dag dag.png \
-#        --prefix nanopore \
-#        -profile singularity \
-#        -process.executor slurm \
-#        --objstore /tmp/ONT_data.csv \
-#        --varCaller viridian \
-#        --refmap '"{}"' \
-#        --pipeline_name oxforduni-ncov2019-artic-nf-nanopore \
-#        --run_uuid b6a04e93-e031-4a80-9ece-0a279f9b1fe4 \
-#        --head_node_ip 10.0.1.2 \
-#	--TESToutputMODE true \
-#        --outdir /work/output/${test_name}_test \
-#        > nextflow.txt
+test_name=ont_viridian
+echo Running ${test_name} test workflow
+mkdir -p /work/runs/${test_name}_test
+cd /work/runs/${test_name}_test
+
+nextflow  run \
+        /data/pipelines/SARS-CoV2_workflows/main.nf \
+        -with-trace -with-report -with-timeline -with-dag dag.png \
+	--seq_tech nanopore \
+        -profile singularity \
+        -process.executor slurm \
+        --objstore /tmp/ONT_data.csv \
+        --run_uuid b6a04e93-e031-4a80-9ece-0a279f9b1fe4 \
+        --head_node_ip 10.0.1.2 \
+	--TESToutputMODE true \
+        --outdir /work/output/${test_name}_test \
+        > nextflow.txt
 #
 #python3 /data/pipelines/ncov2019-artic-nf/tests/GPAS_tests_summary.py \
 #	-w /work/runs/${test_name}_test \
@@ -143,7 +140,7 @@ python3 /data/pipelines/SARS-CoV2_workflows/tests/GPAS_tests_summary.py \
 	-w /work/runs/${test_name}_test \
 	-i /work/output/${test_name}_test/ \
 	-t /work/output/${test_name}_test/${test_name}_summary.tsv  \
-	-e /data/pipelines/ncov2019-artic-nf/tests/${test_name}_expected.tsv \
+	-e /data/pipelines/SARS-CoV2_workflows/tests/${test_name}_expected.tsv \
 	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 
 

@@ -94,7 +94,7 @@ process viridianONTPrimers {
     }
 
     input:
-        tuple val(prefix), path("${prefix}.fastq.gz"),path('ref.fa'),path('primers')
+        tuple val(prefix), path("${prefix}.fastq.gz"), path('primers'), path('ref.fa')
     
     output:
         tuple val(prefix), path("${prefix}_outdir/consensus.fa"), emit: consensus
