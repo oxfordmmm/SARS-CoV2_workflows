@@ -95,9 +95,7 @@ process getWorkflowCommit {
 
     script:
     """
-    home=`(pwd)`
-    cd /data/pipelines/ncov2019-artic-nf
-    git log -1 --pretty=format:"%h" > \${home}/workflowcommit.txt
+    git -C $projectDir log -1 --pretty=format:"%h" > workflowcommit.txt
     """
 }
 

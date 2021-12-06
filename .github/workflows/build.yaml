@@ -1,0 +1,164 @@
+name: Build ncov2019-artic-nf images
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-illumina-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: environments/illumina/Dockerfile
+          tags: oxfordmmm/artic-ncov2019-illumina:latest, oxfordmmm/artic-ncov2019-illumina:${{env.RELEASE_VERSION}}
+          push: true
+          no-cache: true
+      -
+        name: Docker digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  build-illumina-sing:
+    runs-on: ubuntu-latest
+    needs: build-illumina-docker 
+    strategy:
+      matrix:
+        singularity_version:
+          - '3.5.3'
+    container:
+      image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - 
+        name: build singularity
+        run: |
+          singularity build artic-ncov2019-illumina_${{env.RELEASE_VERSION}}.sif docker://oxfordmmm/artic-ncov2019-illumina:${{env.RELEASE_VERSION}}
+      - name: Upload image for release
+        uses: actions/upload-artifact@v2
+        with:
+          name: artic-ncov2019-illumina
+          path: artic-ncov2019-illumina_*.sif
+  
+  build-nanopore-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: environments/nanopore/Dockerfile
+          tags: oxfordmmm/artic-ncov2019-nanopore:latest, oxfordmmm/artic-ncov2019-nanopore:${{env.RELEASE_VERSION}}
+          push: true
+          no-cache: true
+      -
+        name: Docker digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  build-nanopore-sing:
+    runs-on: ubuntu-latest
+    needs: build-nanopore-docker 
+    strategy:
+      matrix:
+        singularity_version:
+          - '3.5.3'
+    container:
+      image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set release version
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - 
+        name: build singularity
+        run: |
+          singularity build artic-ncov2019-nanopore_${{env.RELEASE_VERSION}}.sif docker://oxfordmmm/artic-ncov2019-nanopore:${{env.RELEASE_VERSION}}
+      - name: Upload image for release
+        uses: actions/upload-artifact@v2
+        with:
+          name: artic-ncov2019-nanopore
+          path: artic-ncov2019-nanopore_*.sif
+  
+
+  release_images:
+    runs-on: ubuntu-latest
+    needs: [build-illumina-sing, build-nanopore-sing]
+    steps:
+      - name: Gather illumina singularity image
+        uses: actions/download-artifact@v2
+        with:
+          path: sing_images
+          name: artic-ncov2019-illumina
+
+      - name: Gather nanopore singularity image
+        uses: actions/download-artifact@v2
+        with:
+          path: sing_images
+          name: artic-ncov2019-nanopore
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: | 
+            sing_images/artic-ncov2019-illumina_*.sif
+            sing_images/artic-ncov2019-nanopore_*.sif
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: |
+            artic-ncov2019-illumina
+            artic-ncov2019-nanopore
+          failOnError: false
+
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
+          repository: GenomePathogenAnalysisService/SARS-COV-2_environments
+          path: SARS-COV-2_environments
+          fetch-depth: 0
+      
+      - name: 'Define new version'
+        working-directory: SARS-COV-2_environments
+        run: |
+          CURRENT_VERSION=$(git tag -l --sort=-version:refname | head -n 1)
+          echo "Current Version = $CURRENT_VERSION"
+          readarray -d . -t strarr <<< "$CURRENT_VERSION"
+          ((strarr[-1]+=1))
+          NEW_VERSION="${strarr[0]}"
+          for elem in "${strarr[@]:1}";do NEW_VERSION="$NEW_VERSION.$elem"; done
+          echo "New Version = $NEW_VERSION"
+          echo "NEW_VERSION=${NEW_VERSION}" >> $GITHUB_ENV
+
+      - name: 'Create new environment'
+        uses: softprops/action-gh-release@v1
+        with:
+          repository: GenomePathogenAnalysisService/SARS-COV-2_environments
+          tag_name: ${{ env.NEW_VERSION }}
+          token: ${{ secrets.ACCESS_TOKEN_GITHUB }}

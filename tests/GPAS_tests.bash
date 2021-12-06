@@ -32,13 +32,15 @@ SARS-CoV-2_reference_ox,mmm-artic-ont-s82718-2
 SARS-CoV-2_reference_ox,mmm-artic-ont-s98244-1" \
 	> /tmp/ONT_data.csv
 
+
+repo='/data/pipelines/SARS-CoV2_workflows'
 ## ont_artic_test
 #test_name=ont_artic
 #echo Running ${test_name} test workflow
 #mkdir -p /work/runs/${test_name}_test
 #cd /work/runs/${test_name}_test
 #nextflow run \
-#        /data/pipelines/ncov2019-artic-nf/main.nf \
+#        ${repo}/main.nf \
 #        -with-trace -with-report -with-timeline -with-dag dag.png \
 #        --prefix nanopore \
 #        -profile singularity \
@@ -67,7 +69,7 @@ mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
 
 nextflow  run \
-        /data/pipelines/SARS-CoV2_workflows/main.nf \
+        ${repo}/main.nf \
         -with-trace -with-report -with-timeline -with-dag dag.png \
 	--seq_tech nanopore \
         -profile singularity \
@@ -78,21 +80,21 @@ nextflow  run \
 	--TESToutputMODE true \
         --outdir /work/output/${test_name}_test \
         > nextflow.txt
-#
-#python3 /data/pipelines/ncov2019-artic-nf/tests/GPAS_tests_summary.py \
-#	-w /work/runs/${test_name}_test \
-#	-i /work/output/${test_name}_test/ \
-#	-t /work/output/${test_name}_test/${test_name}_summary.tsv  \
-#	-e /data/pipelines/ncov2019-artic-nf/tests/${test_name}_expected.tsv \
-#	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
-#
+
+python3 ${repo}/tests/GPAS_tests_summary.py \
+	-w /work/runs/${test_name}_test \
+	-i /work/output/${test_name}_test/ \
+	-t /work/output/${test_name}_test/${test_name}_summary.tsv  \
+	-e ${repo}/tests/${test_name}_expected.tsv \
+	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
+
 ## illumina_artic_test
 #test_name=illumina_artic
 #echo Running ${test_name} test workflow
 #mkdir -p /work/runs/${test_name}_test
 #cd /work/runs/${test_name}_test
 #
-#nextflow run /data/pipelines/ncov2019-artic-nf/main.nf \
+#nextflow run ${repo}/main.nf \
 #        -with-trace -with-report -with-timeline -with-dag dag.png \
 #        --readpat '*{1,2}.fastq.gz' \
 #        --illumina --prefix illumina \
@@ -109,11 +111,11 @@ nextflow  run \
 #        > nextflow.txt
 #
 #
-#python3 /data/pipelines/ncov2019-artic-nf/tests/GPAS_tests_summary.py \
+#python3 ${repo}/tests/GPAS_tests_summary.py \
 #	-w /work/runs/${test_name}_test \
 #	-i /work/output/${test_name}_test/ \
 #	-t /work/output/${test_name}_test/${test_name}_summary.tsv  \
-#	-e /data/pipelines/ncov2019-artic-nf/tests/${test_name}_expected.tsv \
+#	-e ${repo}/tests/${test_name}_expected.tsv \
 #	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 #
 # illumina_Viridian_test
@@ -123,7 +125,7 @@ mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
 
 
-nextflow run /data/pipelines/SARS-CoV2_workflows/main.nf \
+nextflow run ${repo}/main.nf \
         -with-trace -with-report -with-timeline -with-dag dag.png \
 	--seq_tech illumina \
         -profile singularity \
@@ -136,11 +138,11 @@ nextflow run /data/pipelines/SARS-CoV2_workflows/main.nf \
         > nextflow.txt
 
 
-python3 /data/pipelines/SARS-CoV2_workflows/tests/GPAS_tests_summary.py \
+python3 ${repo}/tests/GPAS_tests_summary.py \
 	-w /work/runs/${test_name}_test \
 	-i /work/output/${test_name}_test/ \
 	-t /work/output/${test_name}_test/${test_name}_summary.tsv  \
-	-e /data/pipelines/SARS-CoV2_workflows/tests/${test_name}_expected.tsv \
+	-e ${repo}/tests/${test_name}_expected.tsv \
 	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 
 

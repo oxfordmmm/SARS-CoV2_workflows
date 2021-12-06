@@ -190,10 +190,10 @@ class runTests(unittest.TestCase):
     
     def run(self):
         nf=self.checkNextflow(self.opts.workpath)
-        kr=self.checkKraken(self.opts.outpath)
-        df=nf.merge(kr,on='sample',how='left')
+        #kr=self.checkKraken(self.opts.outpath)
+        #df=nf.merge(kr,on='sample',how='left')
         cr=self.checkConsensus(self.opts.outpath)
-        df=df.merge(cr,on='sample',how='left')
+        df=nf.merge(cr,on='sample',how='left')
         pa=self.checkPango(self.opts.outpath)
         df=df.merge(pa,on='sample',how='left')
         nc=self.checkNextclade(self.opts.outpath)
