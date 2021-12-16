@@ -12,7 +12,7 @@ include {getRefFiles} from '../modules/utils.nf'
 include {viridianPrimers} from '../modules/viridian.nf'
 include {viridianAuto} from '../modules/viridian.nf'
 include {download_primers} from '../modules/analysis.nf'
-
+include {uploadToBucket} from '../modules/utils.nf'
 
 workflow Illumina_viridian {
     take:
@@ -51,4 +51,11 @@ workflow sequenceAnalysisViridian {
       }
        
       downstreamAnalysis(viridian.out.consensus, viridian.out.vcfs, getRefFiles.out.fasta, getRefFiles.out.bed)
+
+      if (params.uploadBucket != false) {
+         uploadToBucket(viridian.out.consensus.combine(viridian.out.bam, by:0)
+                                .combine(viridian.out.vcfs, by:0)
+                                .combine(downstreamAnalysis.out.json, by:0))
+      }
+
 }

@@ -61,5 +61,8 @@ workflow downstreamAnalysis {
 
     FN4_upload(consensus.combine(getVariantDefinitions.out).combine(ch_preparedRef).combine(ch_bedFile))
 
+
+    emit:
+    json = makeReport.out.json
 }
     

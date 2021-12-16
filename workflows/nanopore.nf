@@ -12,6 +12,7 @@ include {getRefFiles} from '../modules/utils.nf'
 include {viridianONTPrimers} from '../modules/viridian.nf'
 include {viridianONTAuto} from '../modules/viridian.nf'
 include {download_primers} from '../modules/analysis.nf'
+include {uploadToBucket} from '../modules/utils.nf'
 
 
 workflow Nanopore_viridian {
@@ -46,9 +47,15 @@ workflow sequenceAnalysisViridian {
 
       	viridianONTAuto(ch_filePairs.combine(getRefFiles.out.fasta))
 
-        viridian=viridianAuto
+        viridian=viridianONTAuto
 
       }
        
       downstreamAnalysis(viridian.out.consensus, viridian.out.vcfs, getRefFiles.out.fasta, getRefFiles.out.bed)
+
+      if (params.uploadBucket != false) {
+         uploadToBucket(viridian.out.consensus.combine(viridian.out.bam, by:0)
+                                .combine(viridian.out.vcfs, by:0)
+				.combine(downstreamAnalysis.out.json, by:0))
+      }
 }

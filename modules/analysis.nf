@@ -138,8 +138,8 @@ process makeReport {
 	path(variant_definitions), path('consensus.fasta'),path('ref.fasta'))
 
     output:
-    path("${sampleName}_report.tsv"), emit: tsv
-    path("${sampleName}_report.json"), emit: json
+    tuple val(sampleName),path("${sampleName}_report.tsv"), emit: tsv
+    tuple val(sampleName),path("${sampleName}_report.json"), emit: json
 
     script:
     """
