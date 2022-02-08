@@ -69,6 +69,7 @@ process viridianAuto {
     """
     viridian_workflow run_one_sample \
             --tech illumina \
+            --ref_fasta ref.fa \
             --reads1 ${prefix}_1.fastq.gz \
             --reads2 ${prefix}_2.fastq.gz \
             --outdir ${prefix}_outdir/ \
