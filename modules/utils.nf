@@ -104,7 +104,7 @@ process getObjCsv {
     //tag { prefix }
 
     input:
-        tuple bucket, path
+        tuple val(bucket), val(path)
 
     output:
         path("*.csv")
