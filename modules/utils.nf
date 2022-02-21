@@ -21,6 +21,7 @@ process getObjFiles {
 		--overwrite \
 		--auth instance_principal \
 		--prefix $filePrefix 
+        mv */*.fastq.gz .
 	"""
 }
 
@@ -46,7 +47,8 @@ process getObjFilesONT {
 		--download-dir ./ \
 		--overwrite \
 		--auth instance_principal \
-		--prefix $filePrefix 
+		--prefix $filePrefix
+        mv */*.fastq.gz .
 	"""
 }
 
