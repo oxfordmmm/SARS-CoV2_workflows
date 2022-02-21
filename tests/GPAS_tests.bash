@@ -63,7 +63,7 @@ repo='/data/pipelines/SARS-CoV2_workflows'
 #	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 #
 ## ont_viridian_test
-test_name=ont_viridian
+test_name=ont_viridian_new
 echo Running ${test_name} test workflow
 mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
@@ -119,7 +119,7 @@ python3 ${repo}/tests/GPAS_tests_summary.py \
 #	-c /work/output/${test_name}_test/${test_name}_comparison.tsv
 #
 # illumina_Viridian_test
-test_name=illumina_viridian
+test_name=illumina_viridian_new
 echo Running ${test_name} test workflow
 mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
