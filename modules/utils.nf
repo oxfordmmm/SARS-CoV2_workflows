@@ -21,7 +21,11 @@ process getObjFiles {
 		--overwrite \
 		--auth instance_principal \
 		--prefix $filePrefix 
+    
+    if [ $(find * -type d | wc -l) -gt 0 ]
+    then 
         mv */*.fastq.gz .
+    fi
 	"""
 }
 
@@ -48,7 +52,11 @@ process getObjFilesONT {
 		--overwrite \
 		--auth instance_principal \
 		--prefix $filePrefix
+    
+    if [ $(find * -type d | wc -l) -gt 0 ]
+    then 
         mv */*.fastq.gz .
+    fi
 	"""
 }
 
