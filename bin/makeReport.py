@@ -67,7 +67,10 @@ w['WorkflowInformation']['referenceIdentifier']=record.id
 
 def completeness(nextcladeOutputJson):
     ref_len = 29903
-    total_missing = nextcladeOutputJson['results'][0]['qc']['missingData']['totalMissing']
+    aligned_missing = nextcladeOutputJson['results'][0]['qc']['missingData']['totalMissing']
+    start_missing = nextcladeOutputJson['results'][0]['alignmentStart'] + 1  # Convert to 1-indexed coords
+    end_missing = ref_len - nextcladeOutputJson['results'][0]['alignmentEnd'] + 1  # Convert to 1-indexed coords
+    total_missing = aligned_missing + start_missing + end_missing
     completeness_prop = (ref_len - total_missing) / ref_len
     completeness_pc = round(completeness_prop * 100, 1)
     return completeness_pc
