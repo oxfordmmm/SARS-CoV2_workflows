@@ -11,11 +11,12 @@ jobs:
     name: Test SP3 Stack
     runs-on: ubuntu-latest
     env:
-      PROVIDER_NAME: "GPAS"
+      PROVIDER_NAME: "oxfordmmm-GitHub"
       DEPLOY_REPO_URL: "https://github.com/GenomePathogenAnalysisService/sp3-oci-rm"
-      TF_VERSION: "0.14.x"
+      TF_VERSION: "1.0.x"
       REGION: "uk-london-1"
-      IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaaegasetypwp4mr44kphst3r6irxtbsdmwucwc5tnsbpngqorewepq"
+      IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaaoqrulg7gufk3dv2nqf27i3a6ezpgxbuyx3nwwqaxxbvdidtx4hoq"
+      AD: "lfHB:UK-LONDON-1-AD-1"
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -74,7 +75,7 @@ jobs:
           --config-source-branch-name "main" \
           --display-name ${{env.DEPLOY_STACK_NAME}} \
           --terraform-version $TF_VERSION \
-          --variables '{"compartment_ocid": "${{secrets.OCI_COMPARTMENT_OCID}}",  "region":"${{env.REGION}}", "tenancy_ocid":"${{secrets.OCI_TENANCY_OCID}}", "randomise_ad":"true", "env_name":"sp3", "worker_min":"2", "worker_max":"6", "worker_max_create":"2", "bastion_image":"${{env.IMAGE}}", "bastion_shape":"VM.Standard2.1", "headnode_image":"${{env.IMAGE}}", "headnode_shape":"VM.Standard2.2", "worker_image":"${{env.IMAGE}}", "worker_shape":"VM.Standard2.4", "ssh_pub_key": "${{secrets.SSH_PUBLIC_KEY}}" }' \
+          --variables '{"compartment_ocid": "${{secrets.OCI_COMPARTMENT_OCID}}",  "region":"${{env.REGION}}", "tenancy_ocid":"${{secrets.OCI_TENANCY_OCID}}", "randomise_ad":"false", "ad":"${{env.AD}}", "env_name":"sp3", "worker_min":"1", "worker_max":"1", "worker_max_create":"1", "bastion_image":"${{env.IMAGE}}", "bastion_shape":"VM.Standard2.1", "headnode_image":"${{env.IMAGE}}", "headnode_shape":"VM.Standard2.2", "worker_image":"${{env.IMAGE}}", "worker_shape":"VM.Standard2.4", "ssh_pub_key": "${{secrets.SSH_PUBLIC_KEY}}" , "mount_ad": "${{env.AD}}" }' \
           | jq '.data.id' -r)" >> $GITHUB_ENV
 
       - name: "Execute Apply Job"
@@ -125,7 +126,7 @@ jobs:
       - name: "Start SP3 tests"
         id: tests
         run: |
-          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2  "source ~/env/bin/activate; cd /data/pipelines/SARS-CoV2_workflows; bash tests/GPAS_tests_short.bash"
+          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "cd /data/pipelines/SARS-CoV2_workflows; export PATH=/home/ubuntu/bin:$PATH; export OCI_CLI_AUTH=instance_principal; source ~/env/bin/activate; bash tests/GPAS_tests_short.bash"
 
       - name: "Change tag if tests don't complete succesfully"
         if: ${{ failure() }}
@@ -138,6 +139,19 @@ jobs:
           git checkout main
           git tag -d ${GIT_VERSION}
           git push origin --delete ${GIT_VERSION}
+
+
+      - name: "Get nextflow logs"
+        run: |
+          mkdir -p release_notes
+          scp -o "ProxyCommand = ssh -W %h:%p ubuntu@${BASTION_NAME}" "ubuntu@10.0.1.2:/work/runs/*/*_nextflow.txt" nextflow_logs/
+          echo "NEXTFLOW_LOGS=$(ls nextflow_logs/*)" >> $GITHUB_ENV
+      - name: Upload nextflow logs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: nextflow_logs
+          path: nextflow_logs/*_nextflow.txt
 
       - name: 'Execute Destroy Job'
         if: always()
