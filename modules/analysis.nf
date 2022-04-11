@@ -95,6 +95,7 @@ process getVariantDefinitions {
 }
 
 process getWorkflowCommit {
+    label 'sars_cov2_workflows'
 
     output:
     path "workflowcommit.txt", emit: commit
