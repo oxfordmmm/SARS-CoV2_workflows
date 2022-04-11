@@ -27,7 +27,7 @@ popd
 # ont_viridian_test
 test_name=gpas_ont_short
 echo Running ${test_name} test workflow
-kdir -p /work/runs/${test_name}_test
+mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
 
 nextflow pull oxfordmmm/${repo} -r ${git_version}
