@@ -37,14 +37,14 @@ workflow sequenceAnalysisViridian {
 
         download_primers(params.primers)
 
-      	viridianPrimers(ch_filePairs.combine(download_primers.out).combine(getRefFiles.out.fasta))
+        viridianPrimers(ch_filePairs.combine(download_primers.out).combine(getRefFiles.out.fasta))
 
         viridian=viridianPrimers
 
       }
       else if (params.primers == 'auto') {
 
-      	viridianAuto(ch_filePairs.combine(getRefFiles.out.fasta))
+        viridianAuto(ch_filePairs.combine(getRefFiles.out.fasta))
 
         viridian=viridianAuto
 
