@@ -1,5 +1,6 @@
 process pango {
     tag { sampleName }
+    label 'pango'
 
     publishDir "${params.outdir}/analysis/pango/${params.prefix}", mode: 'copy'
 
@@ -31,6 +32,8 @@ process  download_primers {
 
 
 process download_nextclade_files {
+    label 'nextclade'
+
     publishDir "${params.outdir}/analysis/nextclade/${params.prefix}", mode: 'copy'
     output:
     file('nextclade_files')
@@ -49,6 +52,7 @@ process download_nextclade_files {
 
 process nextclade {
     tag { sampleName }
+    label 'nextclade'
 
     publishDir "${params.outdir}/analysis/nextclade/${params.prefix}", mode: 'copy'
 
@@ -72,6 +76,8 @@ process nextclade {
 }
 
 process getVariantDefinitions {
+    label 'aln2type'
+
     publishDir "${params.outdir}/analysis/aln2type/${params.prefix}", mode: 'copy'
 
     output:
@@ -102,6 +108,7 @@ process getWorkflowCommit {
 
 process aln2type {
     tag { sampleName }
+    label 'aln2type'
 
     publishDir "${params.outdir}/analysis/aln2type/${params.prefix}", mode: 'copy'
 
@@ -129,6 +136,7 @@ process aln2type {
 
 process makeReport {
     tag { sampleName }
+    label 'sars_cov2_workflows'
 
     publishDir "${params.outdir}/analysis/report/${params.prefix}", mode: 'copy'
 
@@ -149,6 +157,7 @@ process makeReport {
 
 process FN4_upload {
     tag { sampleName }
+    label 'fn4'
 
     input:
     tuple(val(sampleName),  file('consensus.fasta'), path(variant_definitions), path(reffasta), path("*"))
@@ -175,6 +184,7 @@ process FN4_upload {
 
 
 process getGFF3 {
+    label 'bcftools'
 
     output:
     path "MN908947.3.gff3"
@@ -189,6 +199,7 @@ process getGFF3 {
 
 process bcftools_csq {
     tag { sampleName }
+    label 'bcftools'
 
     publishDir "${params.outdir}/analysis/bcftools/${params.prefix}", mode: 'copy'
 

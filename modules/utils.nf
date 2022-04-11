@@ -113,6 +113,8 @@ process getObjCsv {
 
     //tag { prefix }
 
+    label 'oci_pipe'
+
     input:
         tuple val(bucket), val(path)
 
