@@ -6,6 +6,7 @@ process getObjFiles {
     */
 
     tag { prefix }
+    label 'oci_pipe'
 
     input:
         tuple val(bucket), val(filePrefix), val(prefix)
@@ -37,6 +38,7 @@ process getObjFilesONT {
     */
 
     tag { prefix }
+    label 'oci_pipe'
 
     input:
         tuple val(bucket), val(filePrefix), val(prefix)
