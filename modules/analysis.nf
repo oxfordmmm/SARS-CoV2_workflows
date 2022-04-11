@@ -166,7 +166,7 @@ process FN4_upload {
     oci os object put \
 	-bn ${params.bucketNameFN4} \
 	--force \
-        --auth instance_principal \
+    --auth instance_principal \
 	--file ${sampleName}.fasta \
 	--metadata "{\\"sampleID\\":\\"$sampleName\\"}"
 
