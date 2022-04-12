@@ -6,6 +6,7 @@ process viridianPrimers {
     */
 
     tag { prefix }
+    label 'viridian'
     publishDir "${params.outdir}/consensus_seqs/", mode: 'copy', saveAs: { filename -> filename.endsWith(".fa") ? "${prefix}.fasta":null}
     publishDir "${params.outdir}/VCF/", mode: 'copy', saveAs: { filename -> filename.endsWith(".vcf") ? "${prefix}.vcf":null}
     publishDir "${params.outdir}/qc/", mode: 'copy', saveAs: { filename -> filename.endsWith(".json") ? "${prefix}.json":null}
@@ -46,8 +47,7 @@ process viridianAuto {
     */
 
     tag { prefix }
-
-    tag { prefix }
+    label 'viridian'
     publishDir "${params.outdir}/consensus_seqs/", mode: 'copy', saveAs: { filename -> filename.endsWith(".fa") ? "${prefix}.fasta":null}
     publishDir "${params.outdir}/VCF/", mode: 'copy', saveAs: { filename -> filename.endsWith(".vcf") ? "${prefix}.vcf":null}
     publishDir "${params.outdir}/qc/", mode: 'copy', saveAs: { filename -> filename.endsWith(".json") ? "${prefix}.json":null}
@@ -87,6 +87,7 @@ process viridianONTPrimers {
     */
 
     tag { prefix }
+    label 'viridian'
     publishDir "${params.outdir}/consensus_seqs/", mode: 'copy', saveAs: { filename -> filename.endsWith(".fa") ? "${prefix}.fasta":null}
     publishDir "${params.outdir}/VCF/", mode: 'copy', saveAs: { filename -> filename.endsWith(".vcf") ? "${prefix}.vcf":null}
     publishDir "${params.outdir}/qc/", mode: 'copy', saveAs: { filename -> filename.endsWith(".json") ? "${prefix}.json":null}
@@ -124,6 +125,7 @@ process viridianONTAuto {
     */
 
     tag { prefix }
+    label 'viridian'
     publishDir "${params.outdir}/consensus_seqs/", mode: 'copy', saveAs: { filename -> filename.endsWith(".fa") ? "${prefix}.fasta":null}
     publishDir "${params.outdir}/VCF/", mode: 'copy', saveAs: { filename -> filename.endsWith(".vcf") ? "${prefix}.vcf":null}
     publishDir "${params.outdir}/qc/", mode: 'copy', saveAs: { filename -> filename.endsWith(".json") ? "${prefix}.json":null}
