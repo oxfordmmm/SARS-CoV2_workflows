@@ -34,12 +34,12 @@ nextflow pull oxfordmmm/${repo} -r ${git_version}
 
 nextflow kuberun \
         oxfordmmm/${repo} \
-        -with-trace -with-report -with-timeline -with-dag dag.png \
         -r ${git_version} -latest \
         --seq_tech nanopore \
         -profile oke \
         --objstore /work/tmp/ONT_data_short.csv \
         --TESToutputMODE true \
+        --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
         > ${test_name}_nextflow.txt
 
@@ -47,6 +47,8 @@ if ! [ -z ${comp_venv} ]
 then
     source $comp_venv/bin/activate
 fi
+
+sudo chown ubuntu:ubuntu /work/output/${test_name}_test
 
 python3 /data/pipelines/${repo}/tests/GPAS_tests_summary.py \
     -w /work/runs/${test_name}_test \
@@ -61,14 +63,16 @@ mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
 
 nextflow kuberun oxfordmmm/${repo} \
-        -with-trace -with-report -with-timeline -with-dag dag.png \
         -r ${git_version} -latest \
         --seq_tech illumina \
         -profile oke \
-        --objstore /tmp/illumina_data_short.csv \
+        --objstore /work/tmp/illumina_data_short.csv \
         --TESToutputMODE true \
+        --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
         > ${test_name}_nextflow.txt
+
+sudo chown ubuntu:ubuntu /work/output/${test_name}_test
 
 python3 /data/pipelines/${repo}/tests/GPAS_tests_summary.py \
     -w /work/runs/${test_name}_test \
