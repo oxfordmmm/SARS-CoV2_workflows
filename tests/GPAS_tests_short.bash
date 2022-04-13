@@ -34,7 +34,6 @@ nextflow pull oxfordmmm/${repo} -r ${git_version}
 
 nextflow kuberun \
         oxfordmmm/${repo} \
-        -with-trace -with-report -with-timeline -with-dag dag.png \
         -r ${git_version} -latest \
         --seq_tech nanopore \
         -profile oke \
@@ -61,7 +60,6 @@ mkdir -p /work/runs/${test_name}_test
 cd /work/runs/${test_name}_test
 
 nextflow kuberun oxfordmmm/${repo} \
-        -with-trace -with-report -with-timeline -with-dag dag.png \
         -r ${git_version} -latest \
         --seq_tech illumina \
         -profile oke \
