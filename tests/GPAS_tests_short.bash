@@ -39,6 +39,7 @@ nextflow kuberun \
         -profile oke \
         --objstore /work/tmp/ONT_data_short.csv \
         --TESToutputMODE true \
+        --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
         > ${test_name}_nextflow.txt
 
@@ -65,6 +66,7 @@ nextflow kuberun oxfordmmm/${repo} \
         -profile oke \
         --objstore /tmp/illumina_data_short.csv \
         --TESToutputMODE true \
+        --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
         > ${test_name}_nextflow.txt
 
