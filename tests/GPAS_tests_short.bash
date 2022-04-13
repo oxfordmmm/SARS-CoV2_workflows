@@ -48,6 +48,8 @@ then
     source $comp_venv/bin/activate
 fi
 
+sudo chown ubuntu:ubuntu /work/output/${test_name}_test
+
 python3 /data/pipelines/${repo}/tests/GPAS_tests_summary.py \
     -w /work/runs/${test_name}_test \
     -i /work/output/${test_name}_test/ \
@@ -69,6 +71,8 @@ nextflow kuberun oxfordmmm/${repo} \
         --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
         > ${test_name}_nextflow.txt
+
+sudo chown ubuntu:ubuntu /work/output/${test_name}_test
 
 python3 /data/pipelines/${repo}/tests/GPAS_tests_summary.py \
     -w /work/runs/${test_name}_test \
