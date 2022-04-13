@@ -66,7 +66,7 @@ nextflow kuberun oxfordmmm/${repo} \
         -r ${git_version} -latest \
         --seq_tech illumina \
         -profile oke \
-        --objstore /tmp/illumina_data_short.csv \
+        --objstore /work/tmp/illumina_data_short.csv \
         --TESToutputMODE true \
         --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
