@@ -82,6 +82,7 @@ process getRefFiles {
 
 process uploadToBucket {
     tag {prefix}
+    label 'oci_pipe'
 
     input:
     tuple(val(prefix), path("${prefix}.fasta"), path("${prefix}.bam"),path("${prefix}.vcf"),path("${prefix}.json"))
