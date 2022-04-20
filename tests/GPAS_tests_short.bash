@@ -41,6 +41,7 @@ nextflow kuberun \
         --TESToutputMODE true \
         --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
+        --uploadBucket test-output \
         > ${test_name}_nextflow.txt
 
 if ! [ -z ${comp_venv} ]
@@ -70,6 +71,7 @@ nextflow kuberun oxfordmmm/${repo} \
         --TESToutputMODE true \
         --run_uuid ${test_name}_test \
         --outdir /work/output/${test_name}_test \
+        --uploadBucket test-output \
         > ${test_name}_nextflow.txt
 
 sudo chown ubuntu:ubuntu /work/output/${test_name}_test
