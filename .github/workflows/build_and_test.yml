@@ -16,7 +16,6 @@ jobs:
       TF_VERSION: "1.0.x"
       REGION: "uk-london-1"
       IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaaoqrulg7gufk3dv2nqf27i3a6ezpgxbuyx3nwwqaxxbvdidtx4hoq"
-      AD: "lfHB:UK-LONDON-1-AD-1"
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -63,6 +62,20 @@ jobs:
           --api-endpoint https://github.com/ \
           --display-name $PROVIDER_NAME \
           --compartment-id ${{secrets.OCI_COMPARTMENT_PROVIDER_OCID}} | jq '.data.id' -r)" >> $GITHUB_ENV
+
+      - name: "Select Availibility Domain"
+        run: |
+          available_ad=""
+          ads=($(oci iam availability-domain list | jq -r '.data[].name'))
+          for ad in "${ads[@]}" 
+          do 
+              available_mounts=$(oci limits resource-availability get -c ${{secrets.OCI_TENANCY_OCID}} --limit-name mount-target-count --service-name filesystem --availability-domain $ad | jq '.data.available');
+              if ((available_mounts >= 2 )) 
+              then 
+                  available_ad=$ad
+              fi
+          done
+          echo "AD=$available_ad" >> $GITHUB_ENV
 
       # Having to sleep rather than --wait-for-state SUCCEEDED due to know bug
       # https://oracle-cloud-infrastructure-python-sdk.readthedocs.io/en/latest/known-issues.html#create-job-and-wait-for-state-fails-with-keyerror-for-resourcemanagerclientcompositeoperations-versions-2-20-0-and-above
