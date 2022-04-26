@@ -9,6 +9,7 @@ include {downstreamAnalysis} from './analysis.nf'
 // import modules
 include {getObjFiles} from '../modules/utils.nf'
 include {getRefFiles} from '../modules/utils.nf'
+include {checkSizeSubsample} from '../modules/utils.nf'
 include {viridianPrimers} from '../modules/viridian.nf'
 include {viridianAuto} from '../modules/viridian.nf'
 include {download_primers} from '../modules/analysis.nf'
