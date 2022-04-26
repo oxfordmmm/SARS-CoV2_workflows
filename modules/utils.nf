@@ -49,17 +49,17 @@ process checkSizeSubsample {
     script:
         maxReadsIll=params.maxReadsIll
         """
-        lines=$(zcat ${prefix}_1.fastq.gz | wc -l);reads=$(($lines / 4))
-        if (( $reads > $maxReadsIll ))
+        lines=$(zcat \${prefix}_1.fastq.gz | wc -l);reads=$((\$lines / 4))
+        if (( \$reads > $maxReadsIll ))
         then
-            echo "${prefix} has $reads which is more than maximum of $maxReadsIll. Subsampling down to this value."
+            echo "${prefix} has \$reads which is more than maximum of $maxReadsIll. Subsampling down to this value."
             gunzip -c ${prefix}_1.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_1_sub.fastq.gz
             mv ${prefix}_1_sub.fastq.gz ${prefix}_1.fastq.gz
 
             gunzip -c ${prefix}_2.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_2_sub.fastq.gz
             mv ${prefix}_2_sub.fastq.gz ${prefix}_2.fastq.gz
         else
-            echo "${prefix} has $reads, no subsampling is needed"
+            echo "${prefix} has \$reads, no subsampling is needed"
         fi
 	    """
 }
@@ -115,14 +115,14 @@ process checkSizeSubsampleONT {
     script:
         maxReadsONT=params.maxReadsONT
         """
-        lines=$(zcat ${prefix}.fastq.gz | wc -l);reads=$(($lines / 4))
-        if (( $reads > $maxReadsONT ))
+        lines=$(zcat ${prefix}.fastq.gz | wc -l);reads=$((\$lines / 4))
+        if (( \$reads > $maxReadsONT ))
         then
-            echo "${prefix} has $reads which is more than maximum of $maxReadsONT. Subsampling down to this value."
+            echo "${prefix} has \$reads which is more than maximum of $maxReadsONT. Subsampling down to this value."
             gunzip -c ${prefix}.fastq.gz | seqtk sample -s 100 - $maxReadsONT | gzip > ${prefix}_sub.fastq.gz
             mv ${prefix}_sub.fastq.gz ${prefix}.fastq.gz
         else
-             echo "${prefix} has $reads, no subsampling is needed"
+             echo "${prefix} has \$reads, no subsampling is needed"
         fi
 	    """
 }
