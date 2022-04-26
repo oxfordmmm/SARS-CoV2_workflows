@@ -21,8 +21,11 @@ workflow Illumina_viridian {
       // get fastq files from objstore
       getObjFiles(ch_objFiles)
 
+      // Subsample if needed
+      checkSizeSubsample(getObjFiles.out.fqs)
+
       // Run standard pipeline
-      sequenceAnalysisViridian(getObjFiles.out.fqs)
+      sequenceAnalysisViridian(checkSizeSubsample.out.checked_fqs)
 
 }
 

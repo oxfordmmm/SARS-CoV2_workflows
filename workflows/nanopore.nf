@@ -9,6 +9,7 @@ include {downstreamAnalysis} from './analysis.nf'
 // import modules
 include {getObjFilesONT} from '../modules/utils.nf'
 include {getRefFiles} from '../modules/utils.nf'
+include {checkSizeSubsampleONT} from '../modules/utils.nf'
 include {viridianONTPrimers} from '../modules/viridian.nf'
 include {viridianONTAuto} from '../modules/viridian.nf'
 include {download_primers} from '../modules/analysis.nf'
@@ -22,8 +23,11 @@ workflow Nanopore_viridian {
       // get fastq files from objstore
       getObjFilesONT(ch_objFiles)
 
+      // Subsample if needed
+      checkSizeSubsampleONT(getObjFilesONT.out.fqs)
+
       // Run standard pipeline
-      sequenceAnalysisViridian(getObjFilesONT.out.fqs)
+      sequenceAnalysisViridian(checkSizeSubsampleONT.out.checked_fqs)
 
 }
 

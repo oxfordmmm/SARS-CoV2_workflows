@@ -30,6 +30,38 @@ process getObjFiles {
 	"""
 }
 
+process checkSizeSubsample {
+    /**
+    * subsamples down to a max read number if above that
+    * @input
+    * @output
+    */
+
+    tag { prefix }
+    label 'oci_pipe'
+
+    input:
+        tuple val(prefix), path("${prefix}*1.fastq.gz"), path("${prefix}*2.fastq.gz")
+
+    output:
+        tuple val(prefix), path("${prefix}*1.fastq.gz"), path("${prefix}*2.fastq.gz"), emit: checked_fqs
+
+    script:
+        maxReadsIll=params.maxReadsIll
+        """
+        lines=$(zcat ${prefix}_1.fastq.gz | wc -l);reads=$(($lines / 4))
+        if (( $reads > $maxReadsIll ))
+        then
+            echo "${prefix} has more than $maxReadsIll reads. Subsampling down to this value."
+            gunzip -c ${prefix}_1.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_1_sub.fastq.gz
+            mv ${prefix}_1_sub.fastq.gz ${prefix}_1.fastq.gz
+
+            gunzip -c ${prefix}_2.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_2_sub.fastq.gz
+            mv ${prefix}_2_sub.fastq.gz ${prefix}_2.fastq.gz
+        fi
+	    """
+}
+
 process getObjFilesONT {
     /**
     * fetches fastq files from object store using OCI bulk download (https://docs.oracle.com/en-us/iaas/tools/oci-cli/2.24.4/oci_cli_docs/cmdref/os/object/bulk-download.html)
@@ -60,6 +92,35 @@ process getObjFilesONT {
         mv */*.fastq.gz .
     fi
 	"""
+}
+
+process checkSizeSubsampleONT {
+    /**
+    * subsamples down to a max read number if above that
+    * @input
+    * @output
+    */
+
+    tag { prefix }
+    label 'oci_pipe'
+
+    input:
+        val(prefix), path("${prefix}.fastq.gz")
+
+    output:
+        val(prefix), path("${prefix}.fastq.gz"), emit: checked_fqs
+
+    script:
+        maxReadsONT=params.maxReadsONT
+        """
+        lines=$(zcat ${prefix}.fastq.gz | wc -l);reads=$(($lines / 4))
+        if (( $reads > $maxReadsONT ))
+        then
+            echo "${prefix} has more than $maxReadsONT reads. Subsampling down to this value."
+            gunzip -c ${prefix}.fastq.gz | seqtk sample -s 100 - $maxReadsONT | gzip > ${prefix}_sub.fastq.gz
+            mv ${prefix}_sub.fastq.gz ${prefix}.fastq.gz
+        fi
+	    """
 }
 
 process getRefFiles {
@@ -101,7 +162,7 @@ process uploadToBucket {
 	--overwrite \
 	--src-dir ./${prefix}/ \
 	-bn $bucketName \
-        --auth instance_principal \
+    --auth instance_principal \
 	--prefix ${prefix}/ 
 
     """ 
