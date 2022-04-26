@@ -44,7 +44,7 @@ process checkSizeSubsample {
         tuple val(prefix), path("${prefix}_1.fastq.gz"), path("${prefix}_2.fastq.gz")
 
     output:
-        tuple val(prefix), path("${prefix}*1.fastq.gz"), path("${prefix}*2.fastq.gz"), emit: checked_fqs
+        tuple val(prefix), path("${prefix}_1.fastq.gz"), path("${prefix}_2.fastq.gz"), emit: checked_fqs
 
     script:
         maxReadsIll=params.maxReadsIll
