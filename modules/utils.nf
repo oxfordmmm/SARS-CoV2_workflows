@@ -161,7 +161,7 @@ process uploadToBucket {
     cp ${prefix}.vcf ${prefix}/
     cp ${prefix}.json ${prefix}/
     gzip ${prefix}/${prefix}.fasta
- 
+
     oci os object bulk-upload \
 	--overwrite \
 	--src-dir ./${prefix}/ \
