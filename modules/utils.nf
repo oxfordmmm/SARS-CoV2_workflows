@@ -163,11 +163,11 @@ process uploadToBucket {
     gzip ${prefix}/${prefix}.fasta
 
     oci os object bulk-upload \
-	--overwrite \
-	--src-dir ./${prefix}/ \
-	-bn $bucketName \
+    --overwrite \
+    --src-dir ./${prefix}/ \
+    -bn $bucketName \
     --auth instance_principal \
-	--prefix ${prefix}/ 
+    --prefix ${prefix}/ 
 
     """ 
 }
