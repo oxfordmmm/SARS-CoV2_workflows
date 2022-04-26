@@ -3,7 +3,7 @@
 // enable dsl2
 nextflow.enable.dsl=2
 
-// import subworflows
+// import subworkflows
 include {downstreamAnalysis} from './analysis.nf'
 
 // import modules
@@ -22,12 +22,17 @@ workflow Illumina_viridian {
       // get fastq files from objstore
       getObjFiles(ch_objFiles)
 
-      // Subsample if needed
-      checkSizeSubsample(getObjFiles.out.fqs)
+      if params.limitMaxSampleSize {
+        // Subsample if needed
+        checkSizeSubsample(getObjFiles.out.fqs)
 
-      // Run standard pipeline
-      sequenceAnalysisViridian(checkSizeSubsample.out.checked_fqs)
-
+        // Run standard pipeline
+        sequenceAnalysisViridian(checkSizeSubsample.out.checked_fqs)
+      }
+      else {
+        // Run standard pipeline
+        sequenceAnalysisViridian(getObjFiles.out.fqs)
+      }
 }
 
 workflow sequenceAnalysisViridian {
@@ -53,11 +58,11 @@ workflow sequenceAnalysisViridian {
         viridian=viridianAuto
 
       }
-       
+      
       downstreamAnalysis(viridian.out.consensus, viridian.out.vcfs, getRefFiles.out.fasta, getRefFiles.out.bed)
 
       if (params.uploadBucket != false) {
-         uploadToBucket(viridian.out.consensus.combine(viridian.out.bam, by:0)
+        uploadToBucket(viridian.out.consensus.combine(viridian.out.bam, by:0)
                                 .combine(viridian.out.vcfs, by:0)
                                 .combine(downstreamAnalysis.out.json, by:0))
       }
