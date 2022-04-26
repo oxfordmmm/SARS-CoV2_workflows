@@ -61,7 +61,7 @@ process checkSizeSubsample {
         else
             echo "${prefix} has \$reads reads, no subsampling is needed"
         fi
-	    """
+        """
 }
 
 process getObjFilesONT {
@@ -122,9 +122,9 @@ process checkSizeSubsampleONT {
             gunzip -c ${prefix}.fastq.gz | seqtk sample -s 100 - $maxReadsONT | gzip > ${prefix}_sub.fastq.gz
             mv ${prefix}_sub.fastq.gz ${prefix}.fastq.gz
         else
-             echo "${prefix} has \$reads reads, no subsampling is needed"
+            echo "${prefix} has \$reads reads, no subsampling is needed"
         fi
-	    """
+        """
 }
 
 process getRefFiles {

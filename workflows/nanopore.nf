@@ -23,7 +23,7 @@ workflow Nanopore_viridian {
       // get fastq files from objstore
       getObjFilesONT(ch_objFiles)
 
-      if params.limitMaxSampleSize {
+      if (params.limitMaxSampleSize) {
         // Subsample if needed
         checkSizeSubsampleONT(getObjFilesONT.out.fqs)
 

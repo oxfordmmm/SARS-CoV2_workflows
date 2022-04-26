@@ -22,7 +22,7 @@ workflow Illumina_viridian {
       // get fastq files from objstore
       getObjFiles(ch_objFiles)
 
-      if params.limitMaxSampleSize {
+      if (params.limitMaxSampleSize) {
         // Subsample if needed
         checkSizeSubsample(getObjFiles.out.fqs)
 
