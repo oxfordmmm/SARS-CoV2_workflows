@@ -49,7 +49,7 @@ process checkSizeSubsample {
     script:
         maxReadsIll=params.maxReadsIll
         """
-        lines=\$(zcat \${prefix}_1.fastq.gz | wc -l);reads=\$((\$lines / 4))
+        lines=\$(zcat ${prefix}_1.fastq.gz | wc -l);reads=\$((\$lines / 4))
         if (( \$reads > $maxReadsIll ))
         then
             echo "${prefix} has \$reads which is more than maximum of $maxReadsIll. Subsampling down to this value."
