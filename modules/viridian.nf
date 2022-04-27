@@ -23,7 +23,7 @@ process viridianPrimers {
         tuple val(prefix), path("${prefix}_outdir/variants.vcf"), emit: vcfs
         tuple val(prefix), path("${prefix}_outdir/reference_mapped.bam"), emit: bam
 
- 
+
     script:
     """
     viridian_workflow run_one_sample \
