@@ -110,10 +110,10 @@ process checkSizeSubsampleONT {
     label 'oci_pipe'
 
     input:
-        val(prefix), path '${prefix}.fastq.gz'
+        val(prefix), path "${prefix}.fastq.gz"
 
     output:
-        val(prefix), path '${prefix}.fastq.gz', emit: checked_fqs
+        val(prefix), path "${prefix}.fastq.gz", emit: checked_fqs
 
     script:
         maxReadsONT=params.maxReadsONT
