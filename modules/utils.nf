@@ -110,7 +110,7 @@ process checkSizeSubsampleONT {
     label 'oci_pipe'
 
     input:
-        val(prefix), path("*.fastq.gz")
+        val(prefix), path("${prefix}.fastq.gz")
 
     output:
         val(prefix), path("${prefix}.fastq.gz"), emit: checked_fqs
