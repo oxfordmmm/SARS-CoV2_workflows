@@ -70,7 +70,6 @@ workflow {
 		    Illumina_viridian(ch_objFiles)
         }
         else if (params.seq_tech == 'nanopore') {
-		    println("kff - Running Nanopore")
 		    Nanopore_viridian(ch_objFiles)
         } else {
             println("Please select a workflow with --seq_tech illumina or nanopore")

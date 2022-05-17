@@ -21,26 +21,18 @@ workflow Nanopore_viridian {
       ch_objFiles
     main:
       // get fastq files from objstore
-      println("kff - Nanopore_viridian. Pre getObjFilesONT")
       getObjFilesONT(ch_objFiles)
-      println("kff - Nanopore_viridian. Post getObjFilesONT")
 
       if (params.limitMaxSampleSize) {
         // Subsample if needed
-	println("kff - Nanopore_viridian. Pre checkSizeSubsampleONT limited")
         checkSizeSubsampleONT(getObjFilesONT.out.fqs)
-	println("kff - Nanopore_viridian. Post checkSizeSubsampleONT limited")
 
         // Run standard pipeline
-	println("kff - Nanopore_viridian. Pre sequenceAnalysisViridian limited")
         sequenceAnalysisViridian(checkSizeSubsampleONT.out.checked_fqs)
-	println("kff - Nanopore_viridian. Post sequenceAnalysisViridian limited")
       }
       else {
         // Run standard pipeline
-	println("kff - Nanopore_viridian. Pre sequenceAnalysisViridian")
         sequenceAnalysisViridian(getObjFilesONT.out.fqs)
-	println("kff - Nanopore_viridian. Post sequenceAnalysisViridian")
       }
       
 

@@ -16,7 +16,6 @@ process getObjFiles {
 
     script:
         """
-	echo "kff - Running getObjFiles from mudules|units"
 	oci os object bulk-download \
 		-bn $bucket \
 		--download-dir ./ \
@@ -50,7 +49,6 @@ process checkSizeSubsample {
     script:
         maxReadsIll=params.maxReadsIll
         """
-	echo "kff - Running checkSizeSubsample from mudules|units"
         lines=\$(zcat ${prefix}_1.fastq.gz | wc -l);reads=\$((\$lines / 4))
         if (( \$reads > $maxReadsIll ))
         then
@@ -84,7 +82,6 @@ process getObjFilesONT {
 
     script:
         """
-	echo "kff - Running getObjFilesONT from modules|utils"
 	oci os object bulk-download \
 		-bn $bucket \
 		--download-dir ./ \
@@ -118,7 +115,6 @@ process checkSizeSubsampleONT {
     script:
         maxReadsONT=params.maxReadsONT
         """
-	echo "kff- Running checkSizeSubsampleOnt from modules|utils"
         lines=\$(zcat ${prefix}.fastq.gz | wc -l);reads=\$((\$lines / 4))
         if (( \$reads > $maxReadsONT ))
         then
@@ -195,8 +191,6 @@ process getObjCsv {
 
     script:
     """
-    echo "kff - Running getObjCsv from mudules|units"
-    
     oci os object get \
         -bn $bucket \
         --auth instance_principal \
