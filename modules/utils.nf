@@ -41,7 +41,7 @@ process checkSizeSubsample {
     label 'oci_pipe'
 
     input:
-        tuple val(prefix), path("${prefix}_1.fastq.gz"), path("${prefix}_2.fastq.gz")
+        tuple val(prefix), path("${prefix}*_1.fastq.gz"), path("${prefix}*_2.fastq.gz")
 
     output:
         tuple val(prefix), path("${prefix}_1.fastq.gz"), path("${prefix}_2.fastq.gz"), emit: checked_fqs
@@ -49,17 +49,20 @@ process checkSizeSubsample {
     script:
         maxReadsIll=params.maxReadsIll
         """
-        lines=\$(zcat ${prefix}_1.fastq.gz | wc -l);reads=\$((\$lines / 4))
+        lines=\$(zcat ${prefix}*_1.fastq.gz | wc -l);reads=\$((\$lines / 4))
         if (( \$reads > $maxReadsIll ))
         then
             echo "${prefix} has \$reads reads which is more than maximum of $maxReadsIll. Subsampling down to this value."
-            gunzip -c ${prefix}_1.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_1_sub.fastq.gz
+            gunzip -c ${prefix}*_1.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_1_sub.fastq.gz
             mv ${prefix}_1_sub.fastq.gz ${prefix}_1.fastq.gz
 
-            gunzip -c ${prefix}_2.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_2_sub.fastq.gz
+            gunzip -c ${prefix}*_2.fastq.gz | seqtk sample -s 100 - $maxReadsIll | gzip > ${prefix}_2_sub.fastq.gz
             mv ${prefix}_2_sub.fastq.gz ${prefix}_2.fastq.gz
         else
             echo "${prefix} has \$reads reads, no subsampling is needed"
+            # renaming to clear the wildcard after prefix going forward
+            mv ${prefix}*_1.fastq.gz ${prefix}_1.fastq.gz
+            mv ${prefix}*_2.fastq.gz ${prefix}_2.fastq.gz
         fi
         """
 }
