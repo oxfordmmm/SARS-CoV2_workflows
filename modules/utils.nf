@@ -24,8 +24,9 @@ process getObjFiles {
 		--prefix $filePrefix 
     
     if [ \$(find * -type d | wc -l) -gt 0 ]
-    then 
-        mv */*.fastq.gz .
+    then
+        shopt -s globstar
+        mv **/*.fastq.gz .
     fi
 	"""
 }
@@ -91,7 +92,8 @@ process getObjFilesONT {
     
     if [ \$(find * -type d | wc -l) -gt 0 ]
     then 
-        mv */*.fastq.gz .
+        shopt -s globstar
+        mv **/*.fastq.gz .
     fi
 	"""
 }
