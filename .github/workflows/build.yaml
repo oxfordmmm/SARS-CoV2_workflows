@@ -93,7 +93,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
-          repository: GenomePathogenAnalysisService/SARS-COV-2_environments
+          repository: GlobalPathogenAnalysisService/SARS-COV-2_environments
           path: SARS-COV-2_environments
           fetch-depth: 0
       
@@ -112,6 +112,6 @@ jobs:
       - name: 'Create new environment'
         uses: softprops/action-gh-release@v1
         with:
-          repository: GenomePathogenAnalysisService/SARS-COV-2_environments
+          repository: GlobalPathogenAnalysisService/SARS-COV-2_environments
           tag_name: ${{ env.NEW_VERSION }}
           token: ${{ secrets.ACCESS_TOKEN_GITHUB }}
