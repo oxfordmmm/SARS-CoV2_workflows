@@ -138,16 +138,16 @@ process viridianONTAuto {
         tuple val(prefix), path("${prefix}.fastq.gz"),path('ref.fa')
 
     output:
-        tuple val(prefix), path("${prefix}_outdir/consensus.fa"), emit: consensus
+        tuple val(prefix), path("${prefix}_outdir/consensus.fa"), emit: consensus, optional: true
         tuple val(prefix), path("${prefix}_outdir/log.json"), emit: coverage
-        tuple val(prefix), path("${prefix}_outdir/variants.vcf"), emit: vcfs
-        tuple val(prefix), path("${prefix}_outdir/reference_mapped.bam"), emit: bam
+        tuple val(prefix), path("${prefix}_outdir/variants.vcf"), emit: vcfs, optional: true
+        tuple val(prefix), path("${prefix}_outdir/reference_mapped.bam"), emit: bam, optional: true
 
     script:
         """
         viridian_workflow run_one_sample \
 		--tech ont \
-                --ref_fasta ref.fa \
+        --ref_fasta ref.fa \
 		--reads ${prefix}.fastq.gz \
 		--outdir ${prefix}_outdir/ \
 		--sample_name ${prefix} \
