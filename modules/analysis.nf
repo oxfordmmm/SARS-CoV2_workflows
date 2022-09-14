@@ -65,7 +65,7 @@ process nextclade {
 
     script:
     """
-    nextclade --input-fasta ${fasta} \
+    nextclade run --input-fasta ${fasta} \
 	--input-root-seq ${reffasta} \
 	--input-dataset=nextclade_files \
 	--output-json=${sampleName}.json \
