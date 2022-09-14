@@ -66,11 +66,8 @@ process nextclade {
     script:
     """
     nextclade run \
-	--input-root-seq ${reffasta} \
 	--input-dataset=nextclade_files \
     --output-all= ./ \
-	--output-json=${sampleName}.json \
-	--output-tsv=${sampleName}.tsv \
 	--output-basename=${sampleName} \
     ${fasta}
     nextclade_ver=`(nextclade -V)`
