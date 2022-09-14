@@ -68,6 +68,7 @@ process nextclade {
     nextclade run --input-fasta ${fasta} \
 	--input-root-seq ${reffasta} \
 	--input-dataset=nextclade_files \
+    --output-all= ./ \
 	--output-json=${sampleName}.json \
 	--output-tsv=${sampleName}.tsv \
 	--output-basename=${sampleName}
