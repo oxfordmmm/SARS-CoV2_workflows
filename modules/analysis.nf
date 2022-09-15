@@ -67,7 +67,7 @@ process nextclade {
     """
     nextclade run \
 	--input-dataset=nextclade_files \
-    --output-all= ./ \
+    --output-all=./ \
 	--output-basename=${sampleName} \
     ${fasta}
     nextclade_ver=`(nextclade -V)`
