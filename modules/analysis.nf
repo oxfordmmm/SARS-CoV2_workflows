@@ -41,7 +41,7 @@ process download_nextclade_files {
     script:
     """
     home=PWD
-    nextclade_ver=`(nextclade -v)`
+    nextclade_ver=`(nextclade -V)`
     nextclade dataset get --name 'sars-cov-2' --output-dir nextclade_files
     echo \$nextclade_ver > nextclade_files/version.txt
 
@@ -65,13 +65,12 @@ process nextclade {
 
     script:
     """
-    nextclade --input-fasta ${fasta} \
-	--input-root-seq ${reffasta} \
+    nextclade run \
 	--input-dataset=nextclade_files \
-	--output-json=${sampleName}.json \
-	--output-tsv=${sampleName}.tsv \
-	--output-basename=${sampleName}
-    nextclade_ver=`(nextclade -v)`
+    --output-all=./ \
+	--output-basename=${sampleName} \
+    ${fasta}
+    nextclade_ver=`(nextclade -V)`
     """
 }
 
