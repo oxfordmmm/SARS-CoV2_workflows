@@ -177,21 +177,21 @@ process uploadToBucket {
 process uploadToS3 {
     tag {prefix}
     label 'oci_pipe'
+    publishDir "s3://mmminbound/"
 
     input:
-    tuple(val(prefix), path("${prefix}.fasta"), path("${prefix}.bam"),path("${prefix}.vcf"),path("${prefix}.json"))
+    tuple(val(prefix), path("${prefix}.fasta"), path("${prefix}.bam"), path("${prefix}.vcf"), path("${prefix}.json"))
+
+    output:
+    tuple(path("${prefix}/${prefix}.fasta"), path("${prefix}/${prefix}.bam"), path("${prefix}/${prefix}.vcf"), path("${prefix}/${prefix}.json"))
 
     script:
-    bucketName=params.S3uploadBucket
     """
     mkdir ${prefix}
-    cp ${prefix}.bam s3://${bucketName}/${prefix}/
-    cp ${prefix}.vcf s3://${bucketName}/${prefix}/
-    cp ${prefix}.json s3://${bucketName}/${prefix}/
-
-    cp ${prefix}.fasta ${prefix}/${prefix.fasta}
-    gzip ${prefix}/${prefix}.fasta
-    cp ${prefix}.fasta s3://${bucketName}/${prefix}/
+    cp ${prefix}.bam ${prefix}/${prefix}.bam
+    cp ${prefix}.vcf ${prefix}/${prefix}.vcf
+    cp ${prefix}.json ${prefix}/${prefix}.json
+    cp ${prefix}.fasta ${prefix}/${prefix}.fasta
 
     """
 }

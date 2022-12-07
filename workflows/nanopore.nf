@@ -14,6 +14,7 @@ include {viridianONTPrimers} from '../modules/viridian.nf'
 include {viridianONTAuto} from '../modules/viridian.nf'
 include {download_primers} from '../modules/analysis.nf'
 include {uploadToBucket} from '../modules/utils.nf'
+include {uploadToS3} from '../modules/utils.nf'
 
 
 workflow Nanopore_viridian {
@@ -69,4 +70,9 @@ workflow sequenceAnalysisViridian {
                                 .combine(viridian.out.vcfs, by:0)
 				.combine(downstreamAnalysis.out.json, by:0))
       }
-}
+
+      if (params.uploadS3 != false) {
+        uploadToS3(viridian.out.consensus.combine(viridian.out.bam, by:0)
+                                .combine(viridian.out.vcfs, by:0)
+				.combine(downstreamAnalysis.out.json, by:0))
+      }}
