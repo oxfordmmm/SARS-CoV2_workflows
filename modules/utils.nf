@@ -174,6 +174,29 @@ process uploadToBucket {
     """ 
 }
 
+process uploadToS3 {
+    tag {prefix}
+    label 'oci_pipe'
+
+    input:
+    tuple(val(prefix), path("${prefix}.fasta"), path("${prefix}.bam"),path("${prefix}.vcf"),path("${prefix}.json"))
+
+    script:
+    bucketName=params.S3uploadBucket
+    """
+    mkdir ${prefix}
+    cp ${prefix}.bam s3://${bucketName}/${prefix}/
+    cp ${prefix}.vcf s3://${bucketName}/${prefix}/
+    cp ${prefix}.json s3://${bucketName}/${prefix}/
+
+    cp ${prefix}.fasta ${prefix}/${prefix.fasta}
+    gzip ${prefix}/${prefix}.fasta
+    cp ${prefix}.fasta s3://${bucketName}/${prefix}/
+
+    """
+}
+
+
 process getObjCsv {
     /**
     * fetches CSV file (sp3data.csv) from object store using OCI bulk download (https://docs.oracle.com/en-us/iaas/tools/oci-cli/2.24.4/oci_cli_docs/cmdref/os/object/bulk-download.html)
