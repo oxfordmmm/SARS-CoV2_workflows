@@ -174,6 +174,29 @@ process uploadToBucket {
     """ 
 }
 
+process uploadToS3 {
+    tag {prefix}
+    label 'oci_pipe'
+    publishDir "s3://mmminbound/"
+
+    input:
+    tuple(val(prefix), path("${prefix}.fasta"), path("${prefix}.bam"), path("${prefix}.vcf"), path("${prefix}.json"))
+
+    output:
+    tuple(path("${prefix}/${prefix}.fasta"), path("${prefix}/${prefix}.bam"), path("${prefix}/${prefix}.vcf"), path("${prefix}/${prefix}.json"))
+
+    script:
+    """
+    mkdir ${prefix}
+    cp ${prefix}.bam ${prefix}/${prefix}.bam
+    cp ${prefix}.vcf ${prefix}/${prefix}.vcf
+    cp ${prefix}.json ${prefix}/${prefix}.json
+    cp ${prefix}.fasta ${prefix}/${prefix}.fasta
+
+    """
+}
+
+
 process getObjCsv {
     /**
     * fetches CSV file (sp3data.csv) from object store using OCI bulk download (https://docs.oracle.com/en-us/iaas/tools/oci-cli/2.24.4/oci_cli_docs/cmdref/os/object/bulk-download.html)
