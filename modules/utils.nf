@@ -133,6 +133,8 @@ process getRefFiles {
     /**
     * fetches reference file from 
     */
+    tag {prefix}
+    label 'viridian'
 
     output:
     path("ref.fasta"), emit: fasta
