@@ -18,6 +18,7 @@ process pango {
 }
 
 process  download_primers {
+    label 'viridian'
     input:
         val(primers) 
 
