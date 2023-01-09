@@ -64,7 +64,6 @@ jobs:
           --api-endpoint https://github.com/ \
           --display-name $PROVIDER_NAME \
           --compartment-id ${{secrets.OCI_COMPARTMENT_PROVIDER_OCID}} | jq '.data.id' -r)" >> $GITHUB_ENV
-          echo $env.SOURCE_PROVIDER_ID
 
       - name: "Select Availibility Domain"
         run: |
