@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-test:
     name: Test SP3 Stack
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       PROVIDER_NAME: "oxfordmmm-GitHub"
       DEPLOY_REPO_URL: "https://github.com/GlobalPathogenAnalysisService/sp3-oci-rm"
