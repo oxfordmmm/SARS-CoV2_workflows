@@ -3,6 +3,8 @@
 name: temp_oci_cicd_test
 on:
   push:
+    branches:
+      - 'fix_cicd_linux_version'
     tags:
       - sp3env-v*
 
