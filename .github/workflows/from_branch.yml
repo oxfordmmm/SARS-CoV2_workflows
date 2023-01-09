@@ -1,4 +1,4 @@
-# Pipeline to build an SP3 stack, conduct a test run and then teardown
+# Pipeline to build an SP3 stack, conduct a test run and then teardown 
 
 name: temp_oci_cicd_test
 on:
@@ -11,7 +11,7 @@ on:
 jobs:
   build-and-test:
     name: Test SP3 Stack
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       PROVIDER_NAME: "oxfordmmm-GitHub"
       DEPLOY_REPO_URL: "https://github.com/GlobalPathogenAnalysisService/sp3-oci-rm"
