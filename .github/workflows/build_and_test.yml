@@ -53,7 +53,7 @@ jobs:
         run: |
           echo "SOURCE_PROVIDER_ID=$(oci resource-manager configuration-source-provider list \
             --compartment-id ${{secrets.OCI_COMPARTMENT_PROVIDER_OCID}}| jq '.data.items[] | select(."display-name"==env.PROVIDER_NAME).id' -r)" >> $GITHUB_ENV
-          echo $SOURCE_PROVIDER_ID
+          echo "$SOURCE_PROVIDER_ID"
           
       - name: "Create Provider"
         if: ${{env.SOURCE_PROVIDER_ID == ''}}
