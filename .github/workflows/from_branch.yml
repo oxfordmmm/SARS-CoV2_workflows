@@ -72,7 +72,7 @@ jobs:
           for ad in "${ads[@]}" 
           do 
               available_mounts=$(oci limits resource-availability get -c ${{secrets.OCI_TENANCY_OCID}} --limit-name mount-target-count --service-name filesystem --availability-domain $ad | jq '.data.available');
-              if ((available_mounts >= 2 )) 
+              if ((available_mounts >= 1 )) 
               then 
                   available_ad=$ad
               fi
