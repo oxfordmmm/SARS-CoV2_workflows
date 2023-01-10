@@ -101,37 +101,37 @@ jobs:
             --stack-id $STACK_ID \
             --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
 
-#       # In case we need for superdelete
-#       - name: "Get Deployed Compartment OCID"
-#         run: |
-#           echo "DEPLOY_COMPARTMENT_ID=$(oci resource-manager stack get-stack-tf-state \
-#           --file - --stack-id $STACK_ID  \
-#           | jq '.resources[] | select(.name == "sp3_child_comp") | .instances[0].attributes.id' \
-#           | tr -d '\"' )" >> $GITHUB_ENV
+      # In case we need for superdelete
+      - name: "Get Deployed Compartment OCID"
+        run: |
+          echo "DEPLOY_COMPARTMENT_ID=$(oci resource-manager stack get-stack-tf-state \
+          --file - --stack-id $STACK_ID  \
+          | jq '.resources[] | select(.name == "sp3_child_comp") | .instances[0].attributes.id' \
+          | tr -d '\"' )" >> $GITHUB_ENV
 
-#       - name: "Get Bastion Name"
-#         run: |
-#           echo "BASTION_NAME=$(oci resource-manager job get-job-tf-state \
-#           --file - --job-id ${APPLY_JOB_ID} \
-#           | jq '.outputs.sp3_bastion.value' | tr -d '\"') " >> $GITHUB_ENV
+      - name: "Get Bastion Name"
+        run: |
+          echo "BASTION_NAME=$(oci resource-manager job get-job-tf-state \
+          --file - --job-id ${APPLY_JOB_ID} \
+          | jq '.outputs.sp3_bastion.value' | tr -d '\"') " >> $GITHUB_ENV
 
-#       - name: Install SSH key of bastion
-#         uses: shimataro/ssh-key-action@v2
-#         with:
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           name: id_rsa
-#           known_hosts: "placeholder"
-#           config: |
-#             ServerAliveInterval 120
-#             StrictHostKeyChecking=no
+      - name: Install SSH key of bastion
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa
+          known_hosts: "placeholder"
+          config: |
+            ServerAliveInterval 120
+            StrictHostKeyChecking=no
 
-#       - name: "Get Bastion Host"
-#         run: |
-#           ssh-keyscan $BASTION_NAME >> ~/.ssh/known_hosts
+      - name: "Get Bastion Host"
+        run: |
+          ssh-keyscan $BASTION_NAME >> ~/.ssh/known_hosts
 
-#       - name: "Wait for SP3 deploy"
-#         run: |
-#           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "while [ ! -f /tmp/sp3_up ]; do sleep 2; done; echo 'SP3 deployed';"
+      - name: "Wait for SP3 deploy"
+        run: |
+          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "while [ ! -f /tmp/sp3_up ]; do sleep 2; done; echo 'SP3 deployed';"
 
 #       - name: "Get version info"
 #         run: |
