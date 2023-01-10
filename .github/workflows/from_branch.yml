@@ -67,16 +67,7 @@ jobs:
 
       - name: "Select Availibility Domain"
         run: |
-          available_ad=""
-          ads=($(oci iam availability-domain list | jq -r '.data[].name'))
-          for ad in "${ads[@]}" 
-          do 
-              available_mounts=$(oci limits resource-availability get -c ${{secrets.OCI_TENANCY_OCID}} --limit-name mount-target-count --service-name filesystem --availability-domain $ad | jq '.data.available');
-              if ((available_mounts >= 2 )) 
-              then 
-                  available_ad=$ad
-              fi
-          done
+          available_ad="lfHB:UK-LONDON-1-AD-2"
           echo "AD=$available_ad" >> $GITHUB_ENV
 
       # Having to sleep rather than --wait-for-state SUCCEEDED due to know bug
