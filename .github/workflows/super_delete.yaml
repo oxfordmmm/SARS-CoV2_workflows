@@ -1,10 +1,10 @@
 # Pipeline to build an SP3 stack, conduct a test run and then teardown 
 
-name: temp_oci_cicd_test
+name: superdelete
 on:
   push:
     branches:
-      - 'fix_cicd_linux_version'
+      - 'fix_cicd_superdelete'
     tags:
       - sp3env-v*
 
