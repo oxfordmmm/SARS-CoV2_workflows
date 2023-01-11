@@ -15,7 +15,7 @@ jobs:
     env:
       PROVIDER_NAME: "oxfordmmm-GitHub"
       DEPLOY_REPO_URL: "https://github.com/GlobalPathogenAnalysisService/sp3-oci-rm"
-      TF_VERSION: "1.0.x"
+      TF_VERSION: "1.1.x"
       REGION: "uk-london-1"
       IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaa3w67hy7esnkd7ljv624zuv7lwtnk3qhm4xtsdcpzgwmbqh4irraq"
     steps:
