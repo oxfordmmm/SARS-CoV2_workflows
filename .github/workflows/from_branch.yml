@@ -203,7 +203,7 @@ jobs:
       - name: 'Superdelete compartment'
         if: ${{ always() }}
         run: |
-          DEPLOY_COMPARTMENT_ID="ocid1.compartment.oc1..aaaaaaaasdmk3oz63bmxsqopqbajipaukclaycph5lq72okugxw7f64v7v3q"
+          DEPLOY_COMPARTMENT_ID="ocid1.compartment.oc1..aaaaaaaayza2ssrorwfz4c4wn7mqaaivtm3xdasqjxe5qeonf7efvddblloa"
           apt update && apt install -y python3-pip python3-venv
           cd OCI-SuperDelete
           python3 -m venv venv
