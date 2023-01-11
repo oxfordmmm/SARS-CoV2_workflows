@@ -187,7 +187,7 @@ jobs:
 #             --stack-id $STACK_ID \
 #             --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
 
-      - name: 'Delete Stack'
+#      - name: 'Delete Stack'
 #         if: always()
 #         run: |
 #           oci resource-manager stack delete --stack-id $STACK_ID --force
