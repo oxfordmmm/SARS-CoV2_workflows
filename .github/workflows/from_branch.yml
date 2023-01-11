@@ -193,7 +193,7 @@ jobs:
 #           oci resource-manager stack delete --stack-id $STACK_ID --force
       
       - uses: actions/checkout@v2
-        if: ${{ failure() }}
+        if: ${{ always() }}
         with:
           repository: GlobalPathogenAnalysisService/OCI-SuperDelete
           path: OCI-SuperDelete
@@ -201,7 +201,7 @@ jobs:
           fetch-depth: 0
 
       - name: 'Superdelete compartment'
-        if: ${{ failure() }}
+        if: ${{ always() }}
         run: |
           echo "DEPLOY_COMPARTMENT_ID='ocid1.compartment.oc1..aaaaaaaayq6gzrgf6qdolx6lbezvmsdwsjuekhsp5lw4k7yxdebwlzeqib6q'"
           apt update && apt install -y python3-pip python3-venv
