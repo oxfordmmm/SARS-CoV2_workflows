@@ -1,5 +1,5 @@
 # Pipeline to build an SP3 stack, conduct a test run and then teardown 
-# test SHOULD PASS
+# test SHOULD FAIL
 
 name: temp_oci_cicd_test
 on:
