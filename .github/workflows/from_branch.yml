@@ -72,7 +72,7 @@ jobs:
           for ad in "${ads[@]}" 
           do 
               available_mounts=$(oci limits resource-availability get -c ${{secrets.OCI_TENANCY_OCID}} --limit-name mount-target-count --service-name filesystem --availability-domain $ad | jq '.data.available');
-              if ((available_mounts >= 1 )) 
+              if ((available_mounts >= 2 )) 
               then 
                   available_ad=$ad
               fi
@@ -87,7 +87,7 @@ jobs:
           --compartment-id ${{secrets.OCI_COMPARTMENT_OCID}} \
           --config-source-configuration-source-provider-id $SOURCE_PROVIDER_ID \
           --config-source-repository-url $DEPLOY_REPO_URL \
-          --config-source-branch-name "fix_cicd" \
+          --config-source-branch-name "main" \
           --display-name ${{env.DEPLOY_STACK_NAME}} \
           --terraform-version $TF_VERSION \
           --variables '{"compartment_ocid": "${{secrets.OCI_COMPARTMENT_OCID}}",  "region":"${{env.REGION}}", "tenancy_ocid":"${{secrets.OCI_TENANCY_OCID}}", "randomise_ad":"false", "ad":"${{env.AD}}", "env_name":"sp3", "worker_min":"1", "worker_max":"1", "worker_max_create":"1", "bastion_image":"${{env.IMAGE}}", "bastion_shape":"VM.Standard2.1", "headnode_image":"${{env.IMAGE}}", "headnode_shape":"VM.Standard2.2", "worker_image":"${{env.IMAGE}}", "worker_shape":"VM.Standard2.4", "ssh_pub_key": "${{secrets.SSH_PUBLIC_KEY}}" , "mount_ad": "${{env.AD}}" }' \
@@ -177,35 +177,35 @@ jobs:
 #           name: nextflow_logs
 #           path: nextflow_logs/*_nextflow.txt
 
-      - name: 'Execute Destroy Job'
-        if: always()
-        run: |
-          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2  "bash /home/ubuntu/sp3/catcloud/scripts/kill_all_nodes.sh"
-          echo "DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job \
-            --execution-plan-strategy AUTO_APPROVED \
-            --stack-id $STACK_ID \
-            --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
+#       - name: 'Execute Destroy Job'
+#         if: always()
+#         run: |
+#           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2  "bash /home/ubuntu/sp3/catcloud/scripts/kill_all_nodes.sh"
+#           echo "DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job \
+#             --execution-plan-strategy AUTO_APPROVED \
+#             --stack-id $STACK_ID \
+#             --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
 
-      - name: 'Delete Stack'
-        if: always()
-        run: |
-          oci resource-manager stack delete --stack-id $STACK_ID --force
+#       - name: 'Delete Stack'
+#         if: always()
+#         run: |
+#           oci resource-manager stack delete --stack-id $STACK_ID --force
       
-      - uses: actions/checkout@v2
-        if: ${{ failure() }}
-        with:
-          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
-          path: OCI-SuperDelete
-          token: ${{secrets.SP3_GITHUB_TOKEN}}
-          fetch-depth: 0
+#       - uses: actions/checkout@v2
+#         if: ${{ failure() }}
+#         with:
+#           repository: GlobalPathogenAnalysisService/OCI-SuperDelete
+#           path: OCI-SuperDelete
+#           token: ${{secrets.SP3_GITHUB_TOKEN}}
+#           fetch-depth: 0
 
-      - name: 'Superdelete compartment'
-        if: ${{ failure() }}
-        run: |
-          apt update && apt install -y python3-pip python3-venv
-          cd OCI-SuperDelete
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install oci
-          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
-          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+#       - name: 'Superdelete compartment'
+#         if: ${{ failure() }}
+#         run: |
+#           apt update && apt install -y python3-pip python3-venv
+#           cd OCI-SuperDelete
+#           python3 -m venv venv
+#           source venv/bin/activate
+#           pip install oci
+#           python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
+#           oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
