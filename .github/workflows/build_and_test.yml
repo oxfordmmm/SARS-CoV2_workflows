@@ -1,21 +1,23 @@
-# Pipeline to build an SP3 stack, conduct a test run and then teardown
+# Pipeline to build an SP3 stack, conduct a test run and then teardown 
 
-name: oci-sp3-tests
+name: temp_oci_cicd_test
 on:
   push:
+    branches:
+      - 'fix_cicd_linux_version'
     tags:
       - sp3env-v*
 
 jobs:
   build-and-test:
     name: Test SP3 Stack
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       PROVIDER_NAME: "oxfordmmm-GitHub"
       DEPLOY_REPO_URL: "https://github.com/GlobalPathogenAnalysisService/sp3-oci-rm"
-      TF_VERSION: "1.0.x"
+      TF_VERSION: "1.1.x"
       REGION: "uk-london-1"
-      IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaaoqrulg7gufk3dv2nqf27i3a6ezpgxbuyx3nwwqaxxbvdidtx4hoq"
+      IMAGE: "ocid1.image.oc1.uk-london-1.aaaaaaaa3w67hy7esnkd7ljv624zuv7lwtnk3qhm4xtsdcpzgwmbqh4irraq"
     steps:
       - uses: actions/checkout@v2
         with: 
@@ -53,8 +55,7 @@ jobs:
         run: |
           echo "SOURCE_PROVIDER_ID=$(oci resource-manager configuration-source-provider list \
             --compartment-id ${{secrets.OCI_COMPARTMENT_PROVIDER_OCID}}| jq '.data.items[] | select(."display-name"==env.PROVIDER_NAME).id' -r)" >> $GITHUB_ENV
-          echo "$SOURCE_PROVIDER_ID"
-          
+
       - name: "Create Provider"
         if: ${{env.SOURCE_PROVIDER_ID == ''}}
         run: |
@@ -89,7 +90,7 @@ jobs:
           --config-source-branch-name "main" \
           --display-name ${{env.DEPLOY_STACK_NAME}} \
           --terraform-version $TF_VERSION \
-          --variables '{"compartment_ocid": "${{secrets.OCI_COMPARTMENT_OCID}}",  "region":"${{env.REGION}}", "tenancy_ocid":"${{secrets.OCI_TENANCY_OCID}}", "randomise_ad":"false", "ad":"${{env.AD}}", "env_name":"sp3", "worker_min":"1", "worker_max":"1", "worker_max_create":"1", "bastion_image":"${{env.IMAGE}}", "bastion_shape":"VM.Standard2.1", "headnode_image":"${{env.IMAGE}}", "headnode_shape":"VM.Standard2.2", "worker_image":"${{env.IMAGE}}", "worker_shape":"VM.Standard2.4", "ssh_pub_key": "${{secrets.SSH_PUBLIC_KEY}}" , "mount_ad": "${{env.AD}}" }' \
+          --variables '{"compartment_ocid": "${{secrets.OCI_COMPARTMENT_OCID}}",  "region":"${{env.REGION}}", "oke_dp_kubernetes_version":"v1.24.1", "tenancy_ocid":"${{secrets.OCI_TENANCY_OCID}}", "randomise_ad":"false", "ad":"${{env.AD}}", "env_name":"sp3", "worker_min":"1", "worker_max":"1", "worker_max_create":"1", "bastion_image":"${{env.IMAGE}}", "bastion_shape":"VM.Standard2.1", "headnode_image":"${{env.IMAGE}}", "headnode_shape":"VM.Standard2.2", "worker_image":"${{env.IMAGE}}", "worker_shape":"VM.Standard2.4", "ssh_pub_key": "${{secrets.SSH_PUBLIC_KEY}}" , "mount_ad": "${{env.AD}}" }' \
           | jq '.data.id' -r)" >> $GITHUB_ENV
 
       - name: "Execute Apply Job"
@@ -131,6 +132,8 @@ jobs:
       - name: "Wait for SP3 deploy"
         run: |
           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "while [ ! -f /tmp/sp3_up ]; do sleep 2; done; echo 'SP3 deployed';"
+          ssh ubuntu@${BASTION_NAME} "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPxEB176YDXqhXjCSfE+NLVGlboE+pRGAOTL1kwSxaeTafRcLEAWYMd1rMzTbuXhyLUS8WO1qMJlifoblzZswXOLmG6U+1SbjFLVPHo3po2NgL0y5xX/JIRJoRSyxFp4YGTblcbsGb2nFbgqLsJ9T0DyFruh9o4mJpEAT0/csp1JtH4I8HDLOJwTHkzLbDQK/moKOiestp1P9MokLHyVlH/7DbBq1Fd7AV0wGVKsG4+ivRYeTB1y6lCyYxfCt/OMrYxG3AYLj3DZdcp/br/1fufP39wbb66rBHj2VQZc+CojanXKig/NYI+UFXY0xPSRxHDHOtCDrhx0UgmTDGYJxXBkSYNfr+ybPCdHCmIXHKqJviuFqJFOKEGaRP63z21BZgZjLsuZ0L/By46mykhW2Vtx7RNFK1CnwFREcg959+y/2d0aGp/pEMp5a1naZYSQQ+vfBSpl/iauv2SEFIMm0yMqQIkYWUy7orcQ5pnS0NoJePXo7rZVkmhDgKjFOd278= jeremy@igni' >> ~/.ssh/authorized_keys"
+          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPxEB176YDXqhXjCSfE+NLVGlboE+pRGAOTL1kwSxaeTafRcLEAWYMd1rMzTbuXhyLUS8WO1qMJlifoblzZswXOLmG6U+1SbjFLVPHo3po2NgL0y5xX/JIRJoRSyxFp4YGTblcbsGb2nFbgqLsJ9T0DyFruh9o4mJpEAT0/csp1JtH4I8HDLOJwTHkzLbDQK/moKOiestp1P9MokLHyVlH/7DbBq1Fd7AV0wGVKsG4+ivRYeTB1y6lCyYxfCt/OMrYxG3AYLj3DZdcp/br/1fufP39wbb66rBHj2VQZc+CojanXKig/NYI+UFXY0xPSRxHDHOtCDrhx0UgmTDGYJxXBkSYNfr+ybPCdHCmIXHKqJviuFqJFOKEGaRP63z21BZgZjLsuZ0L/By46mykhW2Vtx7RNFK1CnwFREcg959+y/2d0aGp/pEMp5a1naZYSQQ+vfBSpl/iauv2SEFIMm0yMqQIkYWUy7orcQ5pnS0NoJePXo7rZVkmhDgKjFOd278= jeremy@igni' >> ~/.ssh/authorized_keys"
 
       - name: "Get version info"
         run: |
@@ -176,35 +179,35 @@ jobs:
           name: nextflow_logs
           path: nextflow_logs/*_nextflow.txt
 
-      - name: 'Execute Destroy Job'
-        if: always()
-        run: |
-          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2  "bash /home/ubuntu/sp3/catcloud/scripts/kill_all_nodes.sh"
-          echo "DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job \
-            --execution-plan-strategy AUTO_APPROVED \
-            --stack-id $STACK_ID \
-            --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
-
-      - name: 'Delete Stack'
-        if: always()
-        run: |
-          oci resource-manager stack delete --stack-id $STACK_ID --force
-      
-      - uses: actions/checkout@v2
-        if: ${{ failure() }}
-        with:
-          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
-          path: OCI-SuperDelete
-          token: ${{secrets.SP3_GITHUB_TOKEN}}
-          fetch-depth: 0
-
-      - name: 'Superdelete compartment'
-        if: ${{ failure() }}
-        run: |
-          apt update && apt install -y python3-pip python3-venv
-          cd OCI-SuperDelete
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install oci
-          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
-          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+#      - name: 'Execute Destroy Job'
+#        if: always()
+#        run: |
+#          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2  "bash /home/ubuntu/sp3/catcloud/scripts/kill_all_nodes.sh"
+#          echo "DESTROY_JOB_ID=$(oci resource-manager job create-destroy-job \
+#            --execution-plan-strategy AUTO_APPROVED \
+#            --stack-id $STACK_ID \
+#            --wait-for-state SUCCEEDED  --wait-for-state FAILED | jq '.data.id' -r)" >> $GITHUB_ENV
+#
+#      - name: 'Delete Stack'
+#        if: always()
+#        run: |
+#          oci resource-manager stack delete --stack-id $STACK_ID --force
+#      
+#      - uses: actions/checkout@v2
+#        if: ${{ failure() }}
+#        with:
+#          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
+#          path: OCI-SuperDelete
+#          token: ${{secrets.SP3_GITHUB_TOKEN}}
+#          fetch-depth: 0
+#
+#      - name: 'Superdelete compartment'
+#        if: ${{ failure() }}
+#        run: |
+#          apt update && apt install -y python3-pip python3-venv
+#          cd OCI-SuperDelete
+#          python3 -m venv venv
+#          source venv/bin/activate
+#          pip install oci
+#          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
+#          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
