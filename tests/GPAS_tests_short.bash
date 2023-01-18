@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -xe
 sudo mkdir -p /work/tmp
 sudo chown ubuntu:ubuntu /work/tmp
 
