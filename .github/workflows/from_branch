@@ -131,7 +131,7 @@ jobs:
         run: |
           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "while [ ! -f /tmp/sp3_up ]; do sleep 2; done; echo 'SP3 deployed';"
  
-      - name: "Get version info"
+      - name: "Get version info" 
         run: |
           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "bash /home/ubuntu/sp3/sp3doc/get_oci_versions.sh"
           mkdir -p release_notes
