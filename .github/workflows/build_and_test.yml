@@ -1,4 +1,4 @@
-# Pipeline to build an SP3 stack, conduct a test run and then teardown 
+# Pipeline to build an SP3 stack, conduct a test run and then teardown
 
 name: oci-sp3-tests
 on:
