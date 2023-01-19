@@ -176,26 +176,26 @@ jobs:
           name: nextflow_logs
           path: nextflow_logs/*_nextflow.txt
 
-#      - name: 'Delete Stack'
-#        if: always()
-#        run: |
-#          oci resource-manager stack delete --stack-id $STACK_ID --force
-#      
-#      - uses: actions/checkout@v2
-#        if: ${{ failure() }}
-#        with:
-#          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
-#          path: OCI-SuperDelete
-#          token: ${{secrets.SP3_GITHUB_TOKEN}}
-#          fetch-depth: 0
-#
-#      - name: 'Superdelete compartment'
-#        if: ${{ failure() }}
-#        run: |
-#          apt update && apt install -y python3-pip python3-venv
-#          cd OCI-SuperDelete
-#          python3 -m venv venv
-#          source venv/bin/activate
-#          pip install oci
-#          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
-#          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+      - name: 'Delete Stack'
+        if: always()
+        run: |
+          oci resource-manager stack delete --stack-id $STACK_ID --force
+      
+      - uses: actions/checkout@v2
+        if: ${{ failure() }}
+        with:
+          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
+          path: OCI-SuperDelete
+          token: ${{secrets.SP3_GITHUB_TOKEN}}
+          fetch-depth: 0
+
+      - name: 'Superdelete compartment'
+        if: ${{ failure() }}
+        run: |
+          apt update && apt install -y python3-pip python3-venv
+          cd OCI-SuperDelete
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install oci
+          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
+          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
