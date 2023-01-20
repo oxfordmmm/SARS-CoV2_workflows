@@ -21,9 +21,7 @@ repo='SARS-CoV2_workflows'
 comp_venv='/home/ubuntu/env'
 
 pushd /data/pipelines/${repo}
-# git_version=$(git describe --tags)
-#For now use the main version so we can check the test works without another release
-git_version="main"
+git_version=$(git describe --tags)
 popd
 
 # ont_viridian_test
