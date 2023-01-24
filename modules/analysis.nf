@@ -154,7 +154,7 @@ process makeReport {
 
     script:
     """
-    makeReport.py ${sampleName} ${manifest_ver}
+    /work/project/oxfordmmm/SARS-CoV2_workflows/bin/makeReport.py ${sampleName} ${manifest_ver}
     """
 }
 
