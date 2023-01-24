@@ -173,7 +173,7 @@ process FN4_upload {
         --keeplength $reffasta \
         > ${sampleName}_wuhan.fa
 
-    FN4ormater.py -i ${sampleName}_wuhan.fa -r MN908947.3 -s ${sampleName} -o ${sampleName}.fasta
+    /work/project/oxfordmmm/SARS-CoV2_workflows/bin/FN4ormater.py -i ${sampleName}_wuhan.fa -r MN908947.3 -s ${sampleName} -o ${sampleName}.fasta
 
     oci os object put \
 	-bn ${params.bucketNameFN4} \
