@@ -103,8 +103,9 @@ process getWorkflowCommit {
 
     script:
     """
-    git config --global --add safe.directory $projectDir
-    git -C $projectDir log -1 --pretty=format:"%h" > workflowcommit.txt
+    git clone https://github.com/oxfordmmm/SARS-CoV2_workflows.git
+    git config --global --add safe.directory SARS-CoV2_workflows
+    git -C SARS-CoV2_workflows log -1 --pretty=format:"%h" > workflowcommit.txt
     """
 }
 
