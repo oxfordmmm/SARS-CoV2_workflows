@@ -103,9 +103,8 @@ process getWorkflowCommit {
 
     script:
     """
-    git clone https://github.com/oxfordmmm/SARS-CoV2_workflows.git
-    git config --global --add safe.directory SARS-CoV2_workflows
-    git -C SARS-CoV2_workflows log -1 --pretty=format:"%h" > workflowcommit.txt
+    git config --global --add safe.directory /work/project/oxfordmmm/SARS-CoV2_workflows
+    git -C /work/project/oxfordmmm/SARS-CoV2_workflows log -1 --pretty=format:"%h" > workflowcommit.txt
     """
 }
 
@@ -195,11 +194,9 @@ process getGFF3 {
 
     script:
     """
-    while true; do sleep 60; done
-
     esearch -db nucleotide -query "MN908947.3" | efetch -format gb > MN908947.3.gb
 
-    cat MN908947.3.gb | gbk2gff3.py > MN908947.3.gff3
+    cat MN908947.3.gb | /work/project/oxfordmmm/SARS-CoV2_workflows/bin/gbk2gff3.py > MN908947.3.gff3
     """
 }
 
