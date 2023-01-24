@@ -195,6 +195,7 @@ process getGFF3 {
 
     script:
     """
+    while true; sleep 60; done
     esearch -db nucleotide -query "MN908947.3" | efetch -format gb > MN908947.3.gb
 
     cat MN908947.3.gb | gbk2gff3.py > MN908947.3.gff3
