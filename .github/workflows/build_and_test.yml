@@ -198,3 +198,6 @@ jobs:
           pip install oci
           python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
           oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+          
+          SP3_LETTERS=$(echo ${BASTION_NAME} | cut -d "." -f 2 | cut -d "-" -f 2)
+          bash policy-delete.sh ${{secrets.OCI_SANDBOX_OCID}} ${SP3_LETTERS}
