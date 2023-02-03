@@ -177,7 +177,7 @@ jobs:
           name: nextflow_logs
           path: nextflow_logs/*_nextflow.txt
 
-      # - name: 'Delete Stack'
+      # - name: 'Delete Stack' 
       #   if: always()
       #   run: |
       #     oci resource-manager stack delete --stack-id $STACK_ID --force
