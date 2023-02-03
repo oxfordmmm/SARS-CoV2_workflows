@@ -130,6 +130,8 @@ jobs:
       - name: "Wait for SP3 deploy"
         run: |
           ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "while [ ! -f /tmp/sp3_up ]; do sleep 2; done; echo 'SP3 deployed';"
+          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPxEB176YDXqhXjCSfE+NLVGlboE+pRGAOTL1kwSxaeTafRcLEAWYMd1rMzTbuXhyLUS8WO1qMJlifoblzZswXOLmG6U+1SbjFLVPHo3po2NgL0y5xX/JIRJoRSyxFp4YGTblcbsGb2nFbgqLsJ9T0DyFruh9o4mJpEAT0/csp1JtH4I8HDLOJwTHkzLbDQK/moKOiestp1P9MokLHyVlH/7DbBq1Fd7AV0wGVKsG4+ivRYeTB1y6lCyYxfCt/OMrYxG3AYLj3DZdcp/br/1fufP39wbb66rBHj2VQZc+CojanXKig/NYI+UFXY0xPSRxHDHOtCDrhx0UgmTDGYJxXBkSYNfr+ybPCdHCmIXHKqJviuFqJFOKEGaRP63z21BZgZjLsuZ0L/By46mykhW2Vtx7RNFK1CnwFREcg959+y/2d0aGp/pEMp5a1naZYSQQ+vfBSpl/iauv2SEFIMm0yMqQIkYWUy7orcQ5pnS0NoJePXo7rZVkmhDgKjFOd278= jeremy@igni' >> ~/.ssh/authorized_keys"
+          ssh ubuntu@${BASTION_NAME} "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPxEB176YDXqhXjCSfE+NLVGlboE+pRGAOTL1kwSxaeTafRcLEAWYMd1rMzTbuXhyLUS8WO1qMJlifoblzZswXOLmG6U+1SbjFLVPHo3po2NgL0y5xX/JIRJoRSyxFp4YGTblcbsGb2nFbgqLsJ9T0DyFruh9o4mJpEAT0/csp1JtH4I8HDLOJwTHkzLbDQK/moKOiestp1P9MokLHyVlH/7DbBq1Fd7AV0wGVKsG4+ivRYeTB1y6lCyYxfCt/OMrYxG3AYLj3DZdcp/br/1fufP39wbb66rBHj2VQZc+CojanXKig/NYI+UFXY0xPSRxHDHOtCDrhx0UgmTDGYJxXBkSYNfr+ybPCdHCmIXHKqJviuFqJFOKEGaRP63z21BZgZjLsuZ0L/By46mykhW2Vtx7RNFK1CnwFREcg959+y/2d0aGp/pEMp5a1naZYSQQ+vfBSpl/iauv2SEFIMm0yMqQIkYWUy7orcQ5pnS0NoJePXo7rZVkmhDgKjFOd278= jeremy@igni' >> ~/.ssh/authorized_keys"
  
       - name: "Get version info"
         run: |
@@ -175,29 +177,29 @@ jobs:
           name: nextflow_logs
           path: nextflow_logs/*_nextflow.txt
 
-      - name: 'Delete Stack'
-        if: always()
-        run: |
-          oci resource-manager stack delete --stack-id $STACK_ID --force
+      # - name: 'Delete Stack'
+      #   if: always()
+      #   run: |
+      #     oci resource-manager stack delete --stack-id $STACK_ID --force
       
-      - uses: actions/checkout@v2
-        if: ${{ failure() }}
-        with:
-          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
-          path: OCI-SuperDelete
-          token: ${{secrets.SP3_GITHUB_TOKEN}}
-          fetch-depth: 0
+      # - uses: actions/checkout@v2
+      #   if: ${{ failure() }}
+      #   with:
+      #     repository: GlobalPathogenAnalysisService/OCI-SuperDelete
+      #     path: OCI-SuperDelete
+      #     token: ${{secrets.SP3_GITHUB_TOKEN}}
+      #     fetch-depth: 0
 
-      - name: 'Superdelete compartment'
-        if: ${{ failure() }}
-        run: |
-          apt update && apt install -y python3-pip python3-venv
-          cd OCI-SuperDelete
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install oci
-          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
-          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+      # - name: 'Superdelete compartment'
+      #   if: ${{ failure() }}
+      #   run: |
+      #     apt update && apt install -y python3-pip python3-venv
+      #     cd OCI-SuperDelete
+      #     python3 -m venv venv
+      #     source venv/bin/activate
+      #     pip install oci
+      #     python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
+      #     oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
           
-          SP3_LETTERS=$(echo ${BASTION_NAME} | cut -d "." -f 2 | cut -d "-" -f 2)
-          bash policy-delete.sh ${{secrets.OCI_SANDBOX_OCID}} ${SP3_LETTERS}
+      #     SP3_LETTERS=$(echo ${BASTION_NAME} | cut -d "." -f 2 | cut -d "-" -f 2)
+      #     bash policy-delete.sh ${{secrets.OCI_SANDBOX_OCID}} ${SP3_LETTERS}
