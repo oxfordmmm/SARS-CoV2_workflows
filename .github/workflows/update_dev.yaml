@@ -2,7 +2,7 @@ name: Update DEV workflows
 
 on:
   workflow_run:
-    workflows: ["oci-sp3-tests-from-branch"]
+    workflows: [oci-sp3-tests-from-branch, build-and-test-from-branch]
     types:
       - completed
 

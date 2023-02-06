@@ -7,7 +7,7 @@ on:
       - "fix_cicd_jw"
 
 jobs:
-  build-and-test:
+  build-and-test-from-branch:
     name: Test SP3 Stack
     runs-on: ubuntu-latest
     env:
