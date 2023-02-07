@@ -163,6 +163,13 @@ jobs:
           git tag -d ${GIT_VERSION}
           git push origin --delete ${GIT_VERSION}
 
+      #Only update the DEV stack to use the latest workflows version
+      #if the tests passed
+      - name: "Update DEV if tests pass"
+        if: steps.tests.outputs.exit_code == 0
+        run: |
+          ssh -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3/sp3doc && sudo python3 update-workflow.py --latest"
+
       - name: "Get nextflow logs"
         run: |
           mkdir -p nextflow_logs
@@ -181,7 +188,7 @@ jobs:
           oci resource-manager stack delete --stack-id $STACK_ID --force
       
       - uses: actions/checkout@v2
-        if: ${{ failure() }}
+        if: always()
         with:
           repository: GlobalPathogenAnalysisService/OCI-SuperDelete
           path: OCI-SuperDelete
@@ -189,7 +196,7 @@ jobs:
           fetch-depth: 0
 
       - name: 'Superdelete compartment'
-        if: ${{ failure() }}
+        if: always()
         run: |
           apt update && apt install -y python3-pip python3-venv
           cd OCI-SuperDelete
