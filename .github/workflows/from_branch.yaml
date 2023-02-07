@@ -168,9 +168,7 @@ jobs:
       - name: "Update DEV if tests pass"
         if: steps.tests.outputs.exit_code == 0
         run: |
-          echo ${{ secrets.SSH_PRIVATE_KEY }} > id_rsa
-          ssh -o StrictHostKeyChecking=no -i id_rsa -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3/sp3doc && sudo python3 update-workflow.py --latest"
-          rm id_rsa
+          ssh -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3/sp3doc && sudo python3 update-workflow.py --latest"
 
       - name: "Get nextflow logs"
         run: |
