@@ -165,6 +165,13 @@ jobs:
           git tag -d ${GIT_VERSION}
           git push origin --delete ${GIT_VERSION}
 
+      - name: "Update DEV if tests pass"
+        if: steps.tests.outputs.exit_code == 0
+        run: |
+          echo ${{ secrets.SSH_PRIVATE_KEY }} > id_rsa
+          ssh -o StrictHostKeyChecking=no -i id_rsa -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3/sp3doc && sudo python3 update-workflow.py --latest"
+          rm id_rsa
+
       - name: "Get nextflow logs"
         run: |
           mkdir -p nextflow_logs
@@ -177,29 +184,29 @@ jobs:
           name: nextflow_logs
           path: nextflow_logs/*_nextflow.txt
 
-      # - name: 'Delete Stack'
-      #   if: always()
-      #   run: |
-      #     oci resource-manager stack delete --stack-id $STACK_ID --force
+      - name: 'Delete Stack'
+        if: always()
+        run: |
+          oci resource-manager stack delete --stack-id $STACK_ID --force
       
-      # - uses: actions/checkout@v2
-      #   if: always()
-      #   with:
-      #     repository: GlobalPathogenAnalysisService/OCI-SuperDelete
-      #     path: OCI-SuperDelete
-      #     token: ${{secrets.SP3_GITHUB_TOKEN}}
-      #     fetch-depth: 0
+      - uses: actions/checkout@v2
+        if: always()
+        with:
+          repository: GlobalPathogenAnalysisService/OCI-SuperDelete
+          path: OCI-SuperDelete
+          token: ${{secrets.SP3_GITHUB_TOKEN}}
+          fetch-depth: 0
 
-      # - name: 'Superdelete compartment'
-      #   if: always()
-      #   run: |
-      #     apt update && apt install -y python3-pip python3-venv
-      #     cd OCI-SuperDelete
-      #     python3 -m venv venv
-      #     source venv/bin/activate
-      #     pip install oci
-      #     python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
-      #     oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
+      - name: 'Superdelete compartment'
+        if: always()
+        run: |
+          apt update && apt install -y python3-pip python3-venv
+          cd OCI-SuperDelete
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install oci
+          python3 delete.py -f -c $DEPLOY_COMPARTMENT_ID
+          oci iam compartment delete --force -c $DEPLOY_COMPARTMENT_ID --wait-for-state SUCCEEDED  --wait-for-state FAILED
           
-      #     SP3_LETTERS=$(echo ${BASTION_NAME} | cut -d "." -f 2 | cut -d "-" -f 2)
-      #     bash policy-delete.sh ${{secrets.OCI_SANDBOX_OCID}} ${SP3_LETTERS}
+          SP3_LETTERS=$(echo ${BASTION_NAME} | cut -d "." -f 2 | cut -d "-" -f 2)
+          bash policy-delete.sh ${{secrets.OCI_SANDBOX_OCID}} ${SP3_LETTERS}
