@@ -168,18 +168,18 @@ jobs:
       - name: "Update DEV if tests pass"
         if: steps.tests.outputs.exit_code == 0
         run: |
-          #Get the commits from the test stack and DEV
-          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "cd ~/sp3 && git rev-parse HEAD" > test_sp3_commit.sha
-          ssh -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3 && git rev-parse HEAD" > dev_sp3_commit.sha
-          echo DEV using commit $(cat dev_sp3_commit.sha)
-          echo tests used commit $(cat test_sp3_commit.sha)
+          #Get the tag from the test stack and DEV
+          ssh -J ubuntu@${BASTION_NAME} ubuntu@10.0.1.2 "cd ~/sp3 && git describe --tags" > test_sp3_tag
+          ssh -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3 && git describe --tags" > dev_sp3_tag
+          echo DEV using tag $(cat dev_sp3_tag)
+          echo tests used tag $(cat test_sp3_tag)
           
-          #Only do the upgrade if the commits match
-          if cmp --silent test_sp3_commit.sha dev_sp3_commit.sha; then
-            echo "Used same SP3 commit, updating DEV workflows"
+          #Only do the upgrade if the tag match
+          if cmp --silent test_sp3_tag dev_sp3_tag; then
+            echo "Used same SP3 tag, updating DEV workflows"
             ssh -J ubuntu@${{secrets.DEV_BASTION}} ubuntu@10.0.1.2 "cd ~/sp3/sp3doc && sudo python3 update-workflow.py --latest"
           else
-            echo "Used a different SP3 commit, manual upgrade required"
+            echo "Used a different SP3 tag, manual upgrade required"
           fi
       - name: "Get nextflow logs"
         run: |
