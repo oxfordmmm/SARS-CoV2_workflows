@@ -1,0 +1,10 @@
+viridian 0.3.7
+nextclade nextclade 2.11.0
+pangolin 4.2
+aln2type 
+bcftools 
+fn4-upload 
+fn4-upload 
+fn4-upload mafft 
+OCI HRR 
+OCI HRR 
