@@ -1,0 +1,9 @@
+viridian 1.1.0
+nextclade 
+
+bcftools 
+fn4-upload 
+fn4-upload 
+fn4-upload mafft 
+OCI HRR 
+OCI HRR 
